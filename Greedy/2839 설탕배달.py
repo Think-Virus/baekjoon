@@ -100,3 +100,23 @@ def sugar_delivery(N) :
 for N in range(50) :
     print(N,":", end='')
     print(sugar_delivery(N))
+
+# 1등 코드 -> 어케 일케 생각했지..
+n = int(input())
+
+a = n // 5
+b = n % 5
+c = 0
+
+while a >= 0:
+    if b % 3 == 0:
+        c = b // 3
+
+        break
+    a -= 1
+    b += 5
+
+if b % 3 == 0:
+    print(a + c)
+else:
+    print(-1)
