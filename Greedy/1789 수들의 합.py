@@ -8,3 +8,6 @@ while S :
     if S <= minus_val :
         break
 print(minus_val)
+
+# 1등 코드
+print(int(((int(input())*8+1)**.5-1)/2)) # -> S = n(n+1)/2 공식 사용
