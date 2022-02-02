@@ -1,3 +1,15 @@
+# 1등 코드
+import sys
+
+n = list(sys.stdin.readline().rstrip()) # 바로 리스트로 만들어버림
+n.sort(reverse=True) #내가 했던 것처럼 역으로 정렬
+if n[-1] != '0' or sum(map(int, n)) % 3 != 0: # 마지막에 0이 없으면 30의 배수가 아니고 값들의 합이 3으로 떨어지지 않으면 30의 배수가 아닌 것을 한 번에 해결함
+    print(-1)
+else:
+    print(''.join(n)) # 값을 내보낼 때에 int든 str이든 상관 없는 듯
+
+
+# 내 코드
 N = input()
 
 def make_30(N) :
