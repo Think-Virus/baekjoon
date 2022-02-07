@@ -1,46 +1,31 @@
-# - 고도가 변하는 지점들을 모두 체크하면서, Stack 자료구조를 이용한다.
-# - 고도가 같다면 그대로 가면되고, 고도가 낮다면 건물의 개수가 추가되어야 한다.
+# 답 확인..
+# y가 변하는 지점들을 확인하면서 stack에 넣거나 뺀다.
+# y가 같다면 stack에 넣지 않고, stack의 top보다 작으면 건물의 개수(answer)를 1씩 증가시킨다.
+# 마지막으로 stack에 남아 있는 값들을 꺼내면서 0보다 크면 건물의 개수를 1씩 증가시킨다.
 import sys
 
-class Stack():
-    def __init__(self):
-        self.stack = [50002]
+input = sys.stdin.readline # 이런 식으로 input값을 넣을 수 있구나..
 
-    def add(self,val):
-        self.stack.append(val)
+n = int(input().rstrip())
 
-    def pop(self):
-        return self.stack.pop()
+stack = []
+answer = 0
 
-    def is_not_empty(self):
-        return bool(self.stack)
-
-    def peek(self):
-        return self.stack[-1]
-
-    def get(self,idx):
-        return self.stack[idx]
-
-
-N = int(sys.stdin.readline().rstrip())
-y_list = []
-stack = Stack()
-pre_y = 0
-building_count = 0
-for _ in range(N) :
-    y_list.append(int(sys.stdin.readline().rstrip().split()[1]))
-
-for i in range(N) :
-    while (stack.is_not_empty() and stack.peek() > y_list[i]) :
-        building_count += 1
+for _ in range(n):
+    y = int(input().rstrip().split()[1])
+    while len(stack)>0 and stack[-1] >y:
+        answer+=1
         stack.pop()
-
-    if (stack.is_not_empty() and stack.peek() == y_list[i]) :
+    if len(stack)>0 and stack[-1] == y:
         continue
+    stack.append(y)
 
-    stack.add(y_list[i])
+while len(stack)>0:
+    if stack[-1] >0:
+        answer+=1
+    stack.pop()
 
-print(building_count)
+print(answer)
 
 
 # 낮아졌을 때 +1하는 방식을 사용했는데, 틀림.. 왜지???? -> 높이가 3,2,4,3인 값이 들어오면 출력은 3이나오는데 답은 4임 -> 중간에 있는 2가 씹힘..
