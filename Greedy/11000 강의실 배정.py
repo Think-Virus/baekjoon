@@ -21,6 +21,7 @@ while len(class_list) - 1 > 0  :
     for _class in class_list :
         if class_0[1] <= _class[0] : # 0의 위치의 수업의 끝보다 0다음의 수업의 시작이 큰 경우
             class_list.remove(_class)
+            class_0 = _class
 
 if len(class_list) :
     class_room += 1
