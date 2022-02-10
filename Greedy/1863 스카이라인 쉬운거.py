@@ -13,15 +13,15 @@ answer = 0
 
 for _ in range(n):
     y = int(input().rstrip().split()[1])
-    while len(stack)>0 and stack[-1] >y:
+    while len(stack)>0 and stack[-1] >y: # y의 값이 작아졌으므로 +1하고 그 건물은 확인된 것이니 pop으로 제거 -> 마지막까지 확인
         answer+=1
         stack.pop()
-    if len(stack)>0 and stack[-1] == y:
+    if len(stack)>0 and stack[-1] == y: # y가 같다면 결국 같은 건물이므로 그냥 continue
         continue
     stack.append(y)
 
 while len(stack)>0:
-    if stack[-1] >0:
+    if stack[-1] >0: # 마지막으로 stack에 남음 건물 확인해서 0보다 클 경우에는 건물이 있다는 거니까.. 바로 확인
         answer+=1
     stack.pop()
 
