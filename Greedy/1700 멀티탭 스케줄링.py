@@ -33,7 +33,7 @@ for _ in range(len(Order_list)):
             Power_socket_list.remove(diff) # 이미 꽂혀있는 제품 중 가장 마지막에 사용하는 제품 제거
             Power_socket_list.append(Product) # 새로운 제품 꽂기
             Result += 1
-        else: # 다시 꽂힐 일이 있는 제품의 경우
+        else: # 다시 꽂힐 일이 있는 제품의 경우 -> 3 7 // 1 2 3 4 1 2 3 일케 들어갈 경우에 반례가 있었네!
             tmp_max = (Power_socket_list[0],Order_list.index(Power_socket_list[0]))
             for i in Power_socket_list[1:] : # 가장 마지막에 사용하는 제품 확인
                 if tmp_max[1] < Order_list.index(i) :
