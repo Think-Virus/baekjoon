@@ -14,9 +14,21 @@ elif N == 2 :
     print(2)
 else : # N이 3 이상일 때
     Result_mid = ""
-    Result_start = "*" + Row[0]
-    Result_end =  Row[-1] + "*"
-    Row = Row[1:len(Row)-1]
+    if Row[0] == "L":
+        Result_start = "*" + Row[:2]
+        tmp_start = 2
+    else:
+        Result_start = "*" + Row[0]
+        tmp_start = 1
+
+    if Row[-1] == "L":
+        Result_end = Row[-2:] + "*"
+        tmp_end = -2
+    else:
+        Result_end =  Row[-1] + "*"
+        tmp_end = -1
+
+    Row = Row[tmp_start:len(Row)+tmp_end]
     Cnt = 0
     for Seat in Row :
         Cnt += 1
@@ -31,5 +43,8 @@ else : # N이 3 이상일 때
             else:
                 Result_mid = Result_mid + Seat
             L_check_var = False
-    Result = Result_start + Result_mid + Result_end
+    if Result_mid[-2:] == "*S" and tmp_end == -2:
+        Result = Result_start + Result_mid + "*" + Result_end
+    else:
+        Result = Result_start + Result_mid + Result_end
     print(Result.count("*"))
