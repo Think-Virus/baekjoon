@@ -3,48 +3,26 @@
 # 이 극장에는 커플석이 있다. 커플석 사이에는 컵홀더가 없다.
 # 극장의 한 줄의 정보가 주어진다. 이때, 이 줄에 사람들이 모두 앉았을 때, 컵홀더에 컵을 꽂을 수 있는 최대 사람의 수를 구하는 프로그램을 작성
 # S는 일반 좌석, L은 커플석을 의미하며, L은 항상 두개씩 쌍으로 주어진다.
+
+# 너무 복잡하게 생각했었다. 그냥 *이 들어가는 위치부터 만들고 인원하고 비교하는 분기처리만 하면 해결
+
 N = int(input())
 Row = input()
-
+Row_plus = "*"
 L_check_var = False
 
-if N == 1 :
-    print(1)
-elif N == 2 :
-    print(2)
-else : # N이 3 이상일 때
-    Result_mid = ""
-    if Row[0] == "L":
-        Result_start = "*" + Row[:2]
-        tmp_start = 2
+for Seat in Row :
+    if Seat == "S" :
+        Row_plus = Row_plus + "S" + "*"
+    elif Seat == "L" and not L_check_var :
+        L_check_var = True
+        Row_plus = Row_plus + "L"
     else:
-        Result_start = "*" + Row[0]
-        tmp_start = 1
+        L_check_var = False
+        Row_plus = Row_plus + "L" + "*"
 
-    if Row[-1] == "L":
-        Result_end = Row[-2:] + "*"
-        tmp_end = -2
-    else:
-        Result_end =  Row[-1] + "*"
-        tmp_end = -1
-
-    Row = Row[tmp_start:len(Row)+tmp_end]
-    Cnt = 0
-    for Seat in Row :
-        Cnt += 1
-        if Seat == "S" :
-            Result_mid = Result_mid+"*"+Seat
-        elif Seat == "L" and not L_check_var :
-            Result_mid = Result_mid+"*"+Seat
-            L_check_var = True
-        else :
-            if Cnt == len(Row) :
-                Result_mid = Result_mid + Seat + "*"
-            else:
-                Result_mid = Result_mid + Seat
-            L_check_var = False
-    if Result_mid[-2:] == "*S" and tmp_end == -2:
-        Result = Result_start + Result_mid + "*" + Result_end
-    else:
-        Result = Result_start + Result_mid + Result_end
-    print(Result.count("*"))
+Holder_Cnt = Row_plus.count("*")
+if N > Holder_Cnt :
+    print(Holder_Cnt)
+else:
+    print(N)
