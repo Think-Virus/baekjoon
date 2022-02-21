@@ -18,16 +18,11 @@ for _ in range(T) :
 
     Candidate_list = []
     Sum_val = 0
-    tmp_start = 0
-    for i in range(N) :
-        Max_val = max(Price_list[tmp_start:])
+    while Price_list :
+        Max_val = max(Price_list)
         Max_idx = Price_list.index(Max_val)
-        if Price_list[i] == Max_val : # Max 값에 왔을 때
-            tmp_start = i+1
-            Sum_val = Sum_val + Max_val*len(Candidate_list) - sum(Candidate_list)
-            Candidate_list = []
-        else:
-            Candidate_list.append(Price_list[i])
+        Sum_val = Sum_val + Max_val * len(Price_list[:Max_idx]) - sum(Price_list[:Max_idx])
+        Price_list = Price_list[Max_idx+1:]
     Test_result.append(Sum_val)
 
 for j in range(T) :
