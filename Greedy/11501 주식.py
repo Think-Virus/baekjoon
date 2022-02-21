@@ -16,6 +16,10 @@ for _ in range(T) :
     N = int(sys.stdin.readline())
     Price_list = list(map(int,sys.stdin.readline().split()))
 
+    if Price_list == sorted(Price_list, reverse=True):
+        Test_result.append(0)
+        continue
+
     Candidate_list = []
     Sum_val = 0
     while Price_list :
