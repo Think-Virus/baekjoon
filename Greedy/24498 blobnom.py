@@ -22,18 +22,12 @@ B_list = list(enumerate(A_list))[1:-1]  # idx 저장
 Result_list = []
 
 while True :
-    if N < 3 :
+    if N < 3:
         print(max(A_list))
         break
 
-    def solve(tup):
-        idx = tup[0]
-        val = tup[1]
-        add_val = min(A_list[idx - 1], A_list[idx + 1])
-        Result_list.append(val + add_val)
-        return tup
-
-
-    tmp = list(map(solve, B_list))
+    for i,v in B_list :
+        add_v = min(A_list[i-1],A_list[i+1])
+        Result_list.append(v+add_v)
     print(max(Result_list))
     break
