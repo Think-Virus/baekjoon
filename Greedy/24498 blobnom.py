@@ -21,14 +21,19 @@ A_list = list(map(int, sys.stdin.readline().split()))
 B_list = list(enumerate(A_list))[1:-1]  # idx 저장
 Result_list = []
 
+while True :
+    if N < 3 :
+        print(max(A_list))
+        break
 
-def solve(tup):
-    idx = tup[0]
-    val = tup[1]
-    add_val = min(A_list[idx - 1], A_list[idx + 1])
-    Result_list.append(val + add_val)
-    return tup
+    def solve(tup):
+        idx = tup[0]
+        val = tup[1]
+        add_val = min(A_list[idx - 1], A_list[idx + 1])
+        Result_list.append(val + add_val)
+        return tup
 
 
-tmp = list(map(solve, B_list))
-print(max(Result_list))
+    tmp = list(map(solve, B_list))
+    print(max(Result_list))
+    break
