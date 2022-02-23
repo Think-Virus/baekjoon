@@ -20,6 +20,8 @@ N = int(sys.stdin.readline())
 A_list = list(map(int, sys.stdin.readline().split()))
 B_list = list(enumerate(A_list))[1:-1]  # idx 저장
 Result_list = []
+Result_list.append(A_list[0])
+Result_list.append(A_list[-1])
 
 while True :
     if N < 3:
