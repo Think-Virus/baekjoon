@@ -10,49 +10,33 @@ Out :
 AAAABB
 """
 import sys
-# board_list = sys.stdin.readline().rstrip().split(".")
 board = sys.stdin.readline().rstrip()
 
-anser = ""
-c_length = 0
-for c in board :
-    if c == "." :
-        if c_length == 2 :
-            anser += "BB"
-        elif c_length % 4 == 0 :
-            anser += "AAAA"*int(c_length // 4)
-        else :
-            r1 = c_length // 6
-            r2 = c_length % 6
-            if r2 == 0 :
-                anser += "AAAABB"*r1
-            elif r2 == 2 :
-                anser += "BB"+"AAAABB"*r1
-            elif r2 == 4 :
-                anser += "AAAA"+"AAAABB"*r1            
-            else :
+while True :
+    if board.count("X") % 2 == 1 :
+        print(-1)
+        break
+
+    anser = ""
+    c_length = 0
+    for c in board :
+        if c == "." :
+            if c_length % 2 == 1 :
                 anser = -1
                 break
-        
-        anser += "."
-        c_length = 0
-    else :
-        c_length += 1
-if anser != -1 and c_length != 0 :
-    if c_length == 2 :
-        anser += "BB"
-    elif c_length % 4 == 0 :
-        anser += "AAAA"*int(c_length // 4)
-    else :
-        r1 = c_length // 6
-        r2 = c_length % 6
-        if r2 == 0 :
-            anser += "AAAABB"*r1
-        elif r2 == 2 :
-            anser += "BB"+"AAAABB"*r1
-        elif r2 == 4 :
-            anser += "AAAA"+"AAAABB"*r1
+            len_4 = c_length // 4
+            len_2 = (c_length - len_4*4)//2
+            anser += "AAAA" * len_4 + "BB" * len_2
+            c_length = 0
+            anser += "."
         else :
-            anser = -1
+            c_length += 1
+    if anser != -1 and c_length != 0 :
+        if c_length % 2 == 1 :
+                anser = -1
+        len_4 = c_length // 4
+        len_2 = (c_length - len_4*4)//2
+        anser += "AAAA" * len_4 + "BB" * len_2
 
-print(anser)
+    print(anser)
+    break
