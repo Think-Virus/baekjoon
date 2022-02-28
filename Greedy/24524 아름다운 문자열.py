@@ -18,29 +18,28 @@ ab
 Out :
 1
 """
-S = list(input())
+from collections import defaultdict
+
+S_dict = defaultdict(list)
+for i,s in enumerate(input()) :
+    S_dict[s].append(i)
 T = input()
 
+var_check = True
 anser = 0
-var_while_check = True
-while S and var_while_check :
-    tmp = ""
-    find_idx = 0
-    for t in T :
-        if S.count(t) == 0 :
-            var_while_check = False
-            break
 
-        tmp_idx = -1
-        for s in S[find_idx:] :
-            tmp_idx += 1
-            if t == s and tmp.find(t) == -1 :
-                find_idx = tmp_idx
-                del S[S.index(t)]
-                tmp += t
-    if T == tmp :
+while var_check and S_dict :
+    pre_idx = -1
+    for t in T :
+        if not S_dict.get(t) :
+            var_check = False
+            break
+        now_idx = S_dict.get(t).pop(0)
+        if now_idx < pre_idx :
+            var_check = False
+            break
+        else:
+            pre_idx = now_idx
+    if var_check :
         anser += 1
-    else:
-        var_while_check = False
-        break
 print(anser)
