@@ -24,18 +24,19 @@ T = input()
 var_check = True
 anser = 0
 while var_check and S :
-    pre_idx = -1
+    tmp_list = []
     for t in T :
         try :
-            now_idx = S.index(t)
+            tmp_list.append(S.index(t))
         except ValueError :
             var_check = False
             break
-        if pre_idx > now_idx :
-            var_check = False
-            break
-        pre_idx = now_idx
-        del S[now_idx]
+    if tmp_list != sorted(tmp_list) :
+        var_check = False
+        break
+
     if var_check :
         anser += 1
+        for i in tmp_list[::-1] :
+            del S[i]
 print(anser)
