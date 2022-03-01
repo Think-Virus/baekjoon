@@ -18,25 +18,27 @@ ab
 Out :
 1
 """
-S = list(input())
+S = list(enumerate(input()))
 T = input()
+T_len = len(T)
 
-var_check = True
 anser = 0
-while var_check and S :
-    tmp_list = []
+while True and S :
+    tmp = 0
+    pre_idx = 0
     for t in T :
-        try :
-            tmp_list.append(S.index(t))
-        except ValueError :
-            var_check = False
-            break
-    if tmp_list != sorted(tmp_list) :
-        var_check = False
+        for i,s in enumerate(S) :
+            if s[1] == t :
+                if pre_idx > s[0] :
+                    tmp = -1
+                    break
+                del S[i]
+                pre_idx = s[0]
+                tmp += 1
+                if T_len == tmp:
+                    anser += 1
+                break
+    if T_len != tmp :
         break
 
-    if var_check :
-        anser += 1
-        for i in tmp_list[::-1] :
-            del S[i]
 print(anser)
