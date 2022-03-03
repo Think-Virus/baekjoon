@@ -15,33 +15,20 @@ while True :
         break
 
     # 오름차순 정렬
-    # Crane_list = deque(sorted(Crane_list))
-    # Box_list = deque(sorted(Box_list))
     Crane_list = (sorted(Crane_list))
-    Box_list = (sorted(Box_list))
+    Box_list = deque(sorted(Box_list))
     # 동시에 움직일 수 있는 것 체크해야 함!
+    # 틀린 이유로 추측되는 거는 가장 센 애로만 들 수 있는 애가 있는 거야 그러면 못드는 게 맞을듯.
 
     anser = 0
     var_continue = True
-    if N < M:  # 작은 걸 기준으로 확인하는 게 빠를 것이라고 판단함
-        while Box_list and var_continue:
-            for Crane in Crane_list:
-                #if Crane < Box_list.popleft():
-                if not Box_list :
-                    break
-                if Crane < Box_list.pop(0):
-                    var_continue = False
-                    break
-            anser += 1
-    else:
-        while Crane_list and var_continue:
-            for Box in Box_list:
-                if not Box_list :
-                    break
-                #if Box < Crane_list.popleft():
-                if Box < Crane_list.pop(0):
-                    var_continue = False
-                    break
-            anser += 1
+    while Box_list and var_continue:
+        for Crane in Crane_list:
+            Box = Box_list.popleft()
+            if not Box_list :
+                break
+            if Crane < Box:
+                Box_list.appendleft(Box)
+        anser += 1
+    print(anser)
     break
-print(anser)
