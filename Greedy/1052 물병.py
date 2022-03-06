@@ -12,38 +12,33 @@
 
 # 그냥 반복문으로 하니까 속도가 곱창나네... 함수 만들어서 map으로 처리하는 게 맞을 듯..?
 
-N,K = map(int,input().split())
-Bottle_list = [1]*N
+# 비트 마스킹 문제라고 했으니까 그걸로 푸는 게 맞을까?
+# 반복문 최대한 없애게 처리했는데도 안되니까 한 번 비트마스킹 기법으로 풀 수 있는지 시도 해보자 -> 엄두가 안남..
 
-# K를 *2^n 해서 원하는 수를 만들어야 할듯
-# 합쳐야만 가능할 수도 있고 안합치고도 될 수 있음
+# 아니면 K가 짝수인지 홀수인지 확인해서 풀 수는 없을라나..? -> 불가능 Why? : 그냥 무조건 합치고 그러면 가능한데 그런 게 아니어서 불가능
 
-anser = 0
-while True :
-    Bottle_list.sort(reverse=True)
-    candidate_list = []
-    if len(Bottle_list) <= K:  # 결과
-        break
+# 정답 코드 확인
+# N을 이진법으로 바꾸면 (ex, 13 => 1101)
+# 물병: 1,1,1,1,1,1,1,1,1,1,1,1,1
+# 합치기: 2,2,2,2,2,2,1
+# 합치기: 4,4,4,1
+# 합치기: 8,4,1
+# 뭔가 규칙이 보인다.
+# 결론: N을 이진법으로 바꾼 수의 1의 개수가
+# 물을 최대로 합친 후의 물병의 개수이다.
+# 그럼 1의 개수를 줄이고 싶으면 이진수 덧셈을 이용한다.
+# -> 1011(11) + 0001(1) => 1100(12)
+# -> 1100(12) + 0100(4) => 10000(16)
 
-    while True :
-        Bottle = Bottle_list.pop()
-        if Bottle_list.count(Bottle) >= 1 :
-            end_idx = Bottle_list.index(Bottle)
-            Bottle_Cnt = Bottle_list.count(Bottle) + 1
-            share_Cnt = Bottle_Cnt // 2
-            remain_Cnt = Bottle_Cnt % 2
-            Bottle_list = Bottle_list[:end_idx]
-            Bottle_list += [2*Bottle]*share_Cnt + [Bottle] * remain_Cnt
-        else:
-            candidate_list.append(Bottle)
-        if not Bottle_list :
-            break
+# 어떤 원리로 저 결론이 성립되는 걸까..?
 
-    Bottle_list += candidate_list
-    if len(Bottle_list) <= K : #결과
-        break
+N, K = map(int, input().split())
 
-    Bottle_list.append(1)
-    anser +=1
+purchased_water_bottle_cnt = 0
 
-print(anser)
+while bin(N).count('1') > K:
+    idx = bin(N)[::-1].index('1')
+    purchased_water_bottle_cnt += 2**idx
+    N += 2**idx
+
+print(purchased_water_bottle_cnt)
