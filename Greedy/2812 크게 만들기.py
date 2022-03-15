@@ -19,19 +19,14 @@ Out :
 775841
 """
 
-tmp = input().split()
-N,K = int(tmp[0]),int(tmp[1])+1
-Val = list(input())
+N, K = map(int, input().split())
+num = list(input())
+k, stack = K, []
 
-# 입력 값이 500000까지 가능하므로 이중 for문이면 O(n)이므로 안됨
-result_val = ""
-while len(result_val) <= N-K-1 :
-    if K == 1 :
-        result_val += "".join(Val)
-        break
-    tmp = Val[:K]
-    result_idx = tmp.index(max(tmp))
-    result_val += max(tmp)
-    K -= result_idx
-    Val = Val[result_idx+1:]
-print(result_val)
+for i in range(N):
+    while k > 0 and stack and stack[-1] < num[i]:
+        stack.pop()
+        k -= 1
+    stack.append(num[i])
+
+print(''.join(stack[:N-K]))
