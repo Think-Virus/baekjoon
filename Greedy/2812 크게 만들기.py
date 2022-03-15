@@ -20,17 +20,18 @@ Out :
 """
 
 tmp = input().split()
-N,K = int(tmp[0]),int(tmp[1])
+N,K = int(tmp[0]),int(tmp[1])+1
 Val = list(input())
 
-Cnt = 0
-
-for _ in range(K) :
-    for i in range(N):
-        if i + 1 == N or Cnt == K:
-            break
-        if Val[i] < Val[i+1] :
-            del Val[i]
-            Cnt +=1
-            break
-print("".join(Val))
+# 입력 값이 500000까지 가능하므로 이중 for문이면 O(n)이므로 안됨
+result_val = ""
+while len(result_val) <= N-K-1 :
+    if K == 1 :
+        result_val += "".join(Val)
+        break
+    tmp = Val[:K]
+    result_idx = tmp.index(max(tmp))
+    result_val += max(tmp)
+    K -= result_idx
+    Val = Val[result_idx+1:]
+print(result_val)
