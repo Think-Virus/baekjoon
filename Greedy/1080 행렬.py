@@ -15,20 +15,50 @@
 
 위쪽 행만 확인해도 괜찮을 듯
 """
+
+
+"""
+안될 듯
+반례 :
+5 5
+00000
+00000
+00000
+00000
+00000
+00000
+00000
+00111
+00111
+00111
+
+00000
+00000
+10010
+10010
+10010
+
+-> 왼쪽 열하고 위쪽 행이 둘 다 다를 때만 뒤집어야 할까?
+만약 그랬을 때 안될만한 예시는?
+"""
 import sys
 
 N, M = map(int, sys.stdin.readline().split())
 A_list = []
 B_list = []
 
-if N < 3 or M < 3:
-    print(-1)
-    exit()
-
 for _ in range(N):
     A_list.append(list(map(int,list(sys.stdin.readline().rstrip()))))
 for _ in range(N):
     B_list.append(list(map(int,list(sys.stdin.readline().rstrip()))))
+
+if A_list == B_list :
+    print(0)
+    exit()
+
+if N < 3 or M < 3:
+    print(-1)
+    exit()
 
 def map_reverse(val) :
     return (val+1)%2
@@ -43,7 +73,7 @@ def reverse_3x3(seq,r,c) :
 Cnt = 0
 for i in range((N // 3 - 1) * 3 + N % 3 + 1):  # i : 위쪽 행
     for j in range((M // 3 - 1) * 3 + M % 3 + 1):  # j : 왼쪽 열, 컴프리헨션 사용해서 확인하면 될듯
-        if A_list[i][j:j + 3] != B_list[i][j:j + 3]:  # 위쪽 행 확인
+        if A_list[i][j:j + 3] != B_list[i][j:j + 3] and (A_list[i][j]!=B_list[i][j] or A_list[i+1][j]!=B_list[i+1][j] or A_list[i+2][j]!=B_list[i+2][j]):  # 위쪽 행과 왼쪽 열 확인
             # 뒤집는 연산 함수 필요
             B_list = reverse_3x3(B_list,i,j)
             Cnt += 1
