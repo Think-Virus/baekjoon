@@ -41,6 +41,12 @@
 -> 왼쪽 열하고 위쪽 행이 둘 다 다를 때만 뒤집어야 할까?
 만약 그랬을 때 안될만한 예시는?
 """
+
+"""
+아.. 조금만 더 생각했으면 됐는데..
+그냥 가장 윗 열의 외쪽 값만 비교해서 다르면 뒤집기였음..
+"""
+
 import sys
 
 N, M = map(int, sys.stdin.readline().split())
@@ -73,7 +79,7 @@ def reverse_3x3(seq,r,c) :
 Cnt = 0
 for i in range((N // 3 - 1) * 3 + N % 3 + 1):  # i : 위쪽 행
     for j in range((M // 3 - 1) * 3 + M % 3 + 1):  # j : 왼쪽 열, 컴프리헨션 사용해서 확인하면 될듯
-        if A_list[i][j:j + 3] != B_list[i][j:j + 3] and (A_list[i][j]!=B_list[i][j] or A_list[i+1][j]!=B_list[i+1][j] or A_list[i+2][j]!=B_list[i+2][j]):  # 위쪽 행과 왼쪽 열 확인
+        if A_list[i][j] != B_list[i][j]: # 위쪽행의 첫번째 값이 다르면 뒤집기
             # 뒤집는 연산 함수 필요
             B_list = reverse_3x3(B_list,i,j)
             Cnt += 1
