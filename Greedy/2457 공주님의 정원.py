@@ -50,8 +50,8 @@ if max(map(max, flower_list)) <= 1130 : # 꽃들 중에서 11월 30일 이후까
     print(0)
     exit()
 
-# 시작월의 첫 숫자가 3이 아닌 것중에 가장 길게 가는 걸 첫번째 것으로 뽑아야지
-check_list = [x for x in flower_list if x[0] <= 310]
+# 시작일자가 3월 1일보다 작은 것들 중에 가장 길게 가는 걸 첫번째 것으로 뽑아야지
+check_list = [x for x in flower_list if x[0] <= 301]
 if not check_list :
     print(0)
     exit()
@@ -61,11 +61,18 @@ flower_list = flower_list[len(check_list):]
 end_date = max(map(max,check_list))
 Cnt = 1
 
+if end_date > 1130 :
+    print(Cnt)
+    exit()
+
 while True :
     Cnt += 1
     check_list = [x for x in flower_list if x[0] <= end_date] # 이전 끝나는 것보다 크거나 같아야 함
+    if not check_list :
+        print(0)
+        exit()
     end_date = max(map(max,check_list))
-    if end_date >= 1130 :
+    if end_date > 1130 :
         break
 
     flower_list = flower_list[len(check_list):]
