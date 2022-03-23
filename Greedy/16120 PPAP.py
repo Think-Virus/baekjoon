@@ -9,18 +9,15 @@
 
 # tip을 봤을 때, 스택을 이용해서 A와 만날 때 확인하라고 하는데..
 # PPPP는 NP임..
+# P도 PPAP임...
 from collections import deque
 p = input()
-
-if p.find('A') == -1 :
-    print('NP')
-    exit()
 
 p = deque(p)
 tmp_list = []
 
 result = deque([])
-while len(p) > 1 :
+while len(p) > 2 :
     pp = p.popleft()
     if pp == 'A' :
         pf = p.popleft()
@@ -38,4 +35,8 @@ while len(p) > 1 :
             exit()
     else:
         result.append(pp)
-print("PPAP")
+
+if "".join(result)+"".join(p) == "PPAP" or "".join(result)+"".join(p) == "P" :
+    print("PPAP")
+else:
+    print("NP")
