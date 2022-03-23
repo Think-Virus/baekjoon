@@ -13,14 +13,17 @@ p = deque(input())
 
 tmp_list = []
 
-result = []
-while p :
+result = deque([])
+while len(p) > 1 :
     pp = p.popleft()
     if pp == 'A' :
         pf = p.popleft()
         if pf == 'P' :
-            if result[-2:] == ['P','P'] :
-                result = result[:-1]
+            if len(result) < 2 :
+                print('NP')
+                exit()
+            if result.pop() == 'P' and result.pop() == 'P' :
+                result.append('P')
             else:
                 print('NP')
                 exit()
