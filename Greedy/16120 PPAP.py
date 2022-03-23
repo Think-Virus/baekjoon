@@ -8,9 +8,15 @@
 # 문자열이 주어졌을 때, 이 문자열이 PPAP 문자열인지 아닌지를 알려주는 프로그램을 작성하여라.
 
 # tip을 봤을 때, 스택을 이용해서 A와 만날 때 확인하라고 하는데..
+# PPPP는 NP임..
 from collections import deque
-p = deque(input())
+p = input()
 
+if p.find('A') == -1 :
+    print('NP')
+    exit()
+
+p = deque(p)
 tmp_list = []
 
 result = deque([])
