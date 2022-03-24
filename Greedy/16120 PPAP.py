@@ -10,6 +10,44 @@
 # tip을 봤을 때, 스택을 이용해서 A와 만날 때 확인하라고 하는데..
 # PPPP는 NP임..
 # P도 PPAP임...
+
+# 1등 코드는 아예 방식이 다르고 속도도 4배 빠르므로 알아둬야 할 필요 있을듯
+import sys
+
+s = input()
+
+cnt = 0 # cnt는 P의 개수
+i = 0
+while i < len(s):
+    if s[i] == 'P': # P인 경우
+        cnt += 1
+        i += 1
+        continue
+
+    # A 인 경우
+    if i + 1 < len(s): # 가장 끝에 A가 있지 않는 경우
+        if cnt >= 2 and s[i + 1] == 'P': # A 다음에 P가 있는 경우
+            cnt -= 1 # 2개 쌓였던 PP가 PPAP로 판정되어 P가 되었으므로 -1한 거
+            i += 1 # A 다음까지 확인했으므로 i는 다음으로 넘어가기 위해 +1
+        else: # A 다음에 A가 있는 경우
+            print("NP")
+            sys.exit()
+            break
+
+    else: # 가장 끝에 A가 있는 경우
+        print("NP")
+        sys.exit()
+        break
+
+    i += 1
+
+if cnt == 1:
+    print("PPAP")
+else: # P만 있는 경우
+    print("NP")
+
+
+"""
 from collections import deque
 p = input()
 
@@ -40,3 +78,4 @@ if "".join(result)+"".join(p) == "PPAP" or "".join(result)+"".join(p) == "P" :
     print("PPAP")
 else:
     print("NP")
+"""
