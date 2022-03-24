@@ -37,4 +37,9 @@ def calc_map(v):
 
 K_list = list(map(calc_map, [mid_val]*K))
 
-print(K_list[-1]-K_list[0]+N-sum(K_list))
+remain = N-sum(K_list)
+add_point = remain%K
+if not add_point :
+    print(K_list[-1]-K_list[0])
+else:
+    print(K_list[-1] - K_list[0] + 1)
