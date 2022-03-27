@@ -5,6 +5,59 @@
 # 편의를 위해 고속도로는 평면상의 직선이라고 가정하고, 센서들은 이 직선 위의 한 기점인 원점으로부터의 정수 거리의 위치에 놓여 있다고 하자.
 # 따라서, 각 센서의 좌표는 정수 하나로 표현된다. 이 상황에서 각 집중국의 수신 가능영역의 거리의 합의 최솟값을 구하는 프로그램을 작성하시오.
 # 단, 집중국의 수신 가능영역의 길이는 0 이상이며 모든 센서의 좌표가 다를 필요는 없다.
+"""
+1등 코드가 훨씬 간단하고 빨라서 공부
+"""
+
+n = int(input())
+m = int(input())
+l1 = list(map(int, input().split()))
+l1.sort()
+#l1 = [1, 3, 6, 6, 7, 9, 12 ,14]
+# if n==1 and m==1: # 왜 n이 1이고 m이 1이면 길이의 합 최솟값이 1이지..?  -> 문제 푼 사람이 잘못 생각한듯!
+#     print(1)
+#
+# elif (n ==1):
+#     print(0)
+#
+# elif m ==1 :
+#     print(l1[-1]-l1[0])
+
+if (n ==1):
+    print(0)
+
+elif m ==1 :
+    print(l1[-1]-l1[0])
+
+
+else :
+    diff_list = [l1[i+1] - l1[i] for i in range(len(l1)-1)] # 각 거리차를 리스트로 만들고
+
+    diff_list.sort() # 정렬하고
+
+    for _ in range(m-1): # 왜 m-1일까...?
+        diff_list.pop()
+    print(sum(diff_list))
+
+"""
+위 풀이의 접근 방식을 생각해보자.
+[1, 3, 6, 6, 7, 9]
+   2  3  0  1  2
+범위라고 했으니까.. 결국 관리국의 범위들의 합을 생각해보면 각 지점간의 거리를 서로 더한 값이겠구나
+그럼 각 범위마다 있다고 관리국이 있다고 하면
+2 3 0 1 2 -> 정렬 : 0 1 2 2 3 
+pop을 하는 게, 그 범위를 기준으로 잘라버린 거구나!
+위에서는 3이 pop되니까
+1 3 // 6 6 7 9 일케 돼서 나머지 합들을 더한 거지!
+
+그러면.. 왜 m-1일까는..
+ㅁㅁㅁㅁ
+일케 4개로 나눠진 박스를 2 그룹으로 나눌 때 필요한 칸막이의 개수는 1개니까.. m-1한거네! 대박쓰...
+
+핵심은 가장 긴 범위를 버림으로써 구간을 나누는 것이네.
+"""
+
+# ___________________________________________________________________________________________________
 
 """
 In :
@@ -69,50 +122,50 @@ Out :
 이 로직이 맞는 듯 이제 구현 ㄱㄱ
 """
 
-N = int(input())
-K = int(input())
-Position_list = list(map(int,input().split()))
-Position_list.sort()
-
-distance_list = sorted(list(set([i-j for i,j in zip(Position_list[1:],Position_list[:-1])])))
-
-for d in distance_list :
-    k = 0
-    while True :
-        if k >= len(Position_list)-1 : # Position_list가 계속 바뀔 것이므로 IdexError 발생하지 않게 처리
-            break
-        if len(Position_list) == K : # 원하는 개수의 관리국을 사용
-            break
-
-        if type(Position_list[k+1]) != int :
-            val1 = Position_list[k+1][0]
-            check1 = "l"
-        else:
-            val1 = Position_list[k+1]
-            check1 = "i"
-        if type(Position_list[k]) != int :
-            val0 = Position_list[k][-1]
-            check0 = "l"
-        else:
-            val0 = Position_list[k]
-            check0 = "i"
-
-        if  val1-val0 == d :
-            if check1 == 'l' and check0 == 'i' :
-                Position_list = [*Position_list[:k], [val0] + Position_list[k + 1], *Position_list[k + 2:]]
-            elif check1 == 'l' and check0 == 'l':
-                Position_list = [*Position_list[:k], Position_list[k] + Position_list[k + 1], *Position_list[k + 2:]]
-            elif check1 == 'i' and check0 == 'l' :
-                Position_list = [*Position_list[:k], Position_list[k]+[val1], *Position_list[k+2:]]
-            else:
-                Position_list = [*Position_list[:k] ,[val0,val1], *Position_list[k + 2:]]
-            k -= 1
-        k += 1
-
-def find_range(v) :
-    if type(v) == int :
-        return 0
-    else:
-        return v[-1]-v[0]
-
-print(sum(map(find_range,Position_list)))
+# N = int(input())
+# K = int(input())
+# Position_list = list(map(int,input().split()))
+# Position_list.sort()
+#
+# distance_list = sorted(list(set([i-j for i,j in zip(Position_list[1:],Position_list[:-1])])))
+#
+# for d in distance_list :
+#     k = 0
+#     while True :
+#         if k >= len(Position_list)-1 : # Position_list가 계속 바뀔 것이므로 IdexError 발생하지 않게 처리
+#             break
+#         if len(Position_list) == K : # 원하는 개수의 관리국을 사용
+#             break
+#
+#         if type(Position_list[k+1]) != int :
+#             val1 = Position_list[k+1][0]
+#             check1 = "l"
+#         else:
+#             val1 = Position_list[k+1]
+#             check1 = "i"
+#         if type(Position_list[k]) != int :
+#             val0 = Position_list[k][-1]
+#             check0 = "l"
+#         else:
+#             val0 = Position_list[k]
+#             check0 = "i"
+#
+#         if  val1-val0 == d :
+#             if check1 == 'l' and check0 == 'i' :
+#                 Position_list = [*Position_list[:k], [val0] + Position_list[k + 1], *Position_list[k + 2:]]
+#             elif check1 == 'l' and check0 == 'l':
+#                 Position_list = [*Position_list[:k], Position_list[k] + Position_list[k + 1], *Position_list[k + 2:]]
+#             elif check1 == 'i' and check0 == 'l' :
+#                 Position_list = [*Position_list[:k], Position_list[k]+[val1], *Position_list[k+2:]]
+#             else:
+#                 Position_list = [*Position_list[:k] ,[val0,val1], *Position_list[k + 2:]]
+#             k -= 1
+#         k += 1
+#
+# def find_range(v) :
+#     if type(v) == int :
+#         return 0
+#     else:
+#         return v[-1]-v[0]
+#
+# print(sum(map(find_range,Position_list)))
