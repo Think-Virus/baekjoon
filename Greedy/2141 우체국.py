@@ -38,27 +38,31 @@ In :
 import sys
 
 N = int(sys.stdin.readline())
-village_list = []
-total_people = 0
+
+#2. 마을의 위치, 인구 수 : info : [x,a]
+info=[]
+people=0 #전체 인구 수
 
 for _ in range(N):
-    x, a = map(int, sys.stdin.readline().split())
-    total_people += a
-    village_list.append([x, a])
-village_list.sort()
+    x = list(map(int, sys.stdin.readline().split()))
+    info.append(x)
+    people+=x[1]
 
-now_people = village_list[0][1]
-pre_diff = abs(now_people - (total_people / 2))
-for i in range(1,N) :
-    now_people += village_list[i][1]
-    now_diff = abs(now_people - (total_people / 2))
-    if now_people > total_people // 2 :
-        if now_diff > pre_diff :
-            print(village_list[i-1][0])
-            exit()
-        else:
-            print(village_list[i][0])
-            exit()
-    elif now_people == total_people :
-        print(village_list[i][0])
-        exit()
+#3. 마을 위치 순으로 정렬
+info=sorted(info)
+
+#4. 인구의 절반 구하기
+mid=people//2
+
+#4-1. 전체 인구가 홀수 일 경우에는 올림
+if (people%2)==1:
+    mid+=1
+
+#5. 인구의 절반이 속한 마을에 우체국 설치
+count=0
+for l,p in info:
+    count+=p
+
+    if count>=mid:
+        print(l)
+        break
