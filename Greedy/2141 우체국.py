@@ -31,25 +31,33 @@ In :
 """
 
 import sys
-N = int(sys.stdin.readline())
-candidate_list = []
 
-for _ in range(N) :
-    x,a = map(int,sys.stdin.readline().split())
-    candidate_list.append([x,a])
-candidate_list.sort()
+N = int(sys.stdin.readline())
+total_list = []
+avg_point = 0
+
+for _ in range(N):
+    x, a = map(int, sys.stdin.readline().split())
+    avg_point += x
+    total_list.append([x, a])
+
+avg_point = avg_point / N
+
+# 1) 거리 차를 줄이는 방법
+total_list.sort(key=lambda x:abs(avg_point-x[0]))
+point_length = total_list[0][0]
 
 def find_length(seq) :
-    global point
-    return abs(point - seq[0])*seq[1]
+    return abs(total_list[0][0] - seq[0])*seq[1]
 
-min_point = candidate_list[1][0]
-point = min_point
-min_length = sum(map(find_length,candidate_list))
-for i in range(1,N) :
-    point = candidate_list[i][0]
-    length = sum(map(find_length,candidate_list))
-    if length < min_length :
-        min_length = length
-        min_point = point
-print(min_point)
+result_by_length = sum(map(find_length,total_list))
+
+# 2) 사람이 가장 많은 곳을 없애는 것
+total_list.sort(key=lambda x:(x[1],-abs(avg_point-x[0])),reverse=True)
+point_people = total_list[0][0]
+result_by_people= sum(map(find_length,total_list))
+
+if result_by_people > result_by_length :
+    print(point_length)
+else:
+    print(point_people)
