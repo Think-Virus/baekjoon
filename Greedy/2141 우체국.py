@@ -44,7 +44,7 @@ for _ in range(N):
 avg_point = avg_point / N
 
 # 1) 거리 차를 줄이는 방법
-total_list.sort(key=lambda x:abs(avg_point-x[0]))
+total_list.sort(key=lambda x:(abs(avg_point-x[0]),-x[0]))
 point_length = total_list[0][0]
 
 def find_length(seq) :
