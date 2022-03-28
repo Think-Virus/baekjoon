@@ -29,41 +29,27 @@ In :
 작은 값이 많아다면 작은 값들 중에서 사람 수가 제일 많은 곳이 우체국의 위치고
 큰값이 많다면 큰 값들 중에서 사람 수가 제일 많은 곳
 """
+
 import sys
 N = int(sys.stdin.readline())
 candidate_list = []
-mid_point=0
 
 for _ in range(N) :
     x,a = map(int,sys.stdin.readline().split())
-    mid_point += x
     candidate_list.append([x,a])
 candidate_list.sort()
 
-mid_point = mid_point / N
-short_vil = [i for i in candidate_list if i[0] < mid_point]
-long_vil = [i for i in candidate_list if i[0] >= mid_point]
+def find_length(seq) :
+    global point
+    return abs(point - seq[0])*seq[1]
 
-def find_max_people(seq) :
-    global max_people
-    global max_seq
-    if seq[1] >= max_people :
-        max_people = seq[1]
-        max_seq = seq
-    return 0
-
-max_seq = []
-max_people = 0
-if len(short_vil) > len(long_vil) : # 작은 값이 많은 경우
-    galbage = list(map(find_max_people,short_vil))
-elif len(short_vil) < len(long_vil) : # 큰 값이 많은 경우
-    galbage = list(map(find_max_people,long_vil))
-else: # 두 값이 같은 경우
-    galbage = list(map(find_max_people,candidate_list))
-
-print(max_seq[0])
-# def find_point(seq) :
-#     global max_seq
-#     return abs(seq[0]-max_seq[0])*seq[1]
-#
-# print(sum(map(find_point,candidate_list)))
+min_point = candidate_list[1][0]
+point = min_point
+min_length = sum(map(find_length,candidate_list))
+for i in range(1,N) :
+    point = candidate_list[i][0]
+    length = sum(map(find_length,candidate_list))
+    if length < min_length :
+        min_length = length
+        min_point = point
+print(min_point)
