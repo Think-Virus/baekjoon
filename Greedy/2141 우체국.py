@@ -30,34 +30,35 @@ In :
 큰값이 많다면 큰 값들 중에서 사람 수가 제일 많은 곳
 """
 
+"""
+정답 확인
+1. 거리의 합이 최소가 되려면 우체국은 어느 한 마을 위치에 지어져야 함
+2. 우체국이 있는 지점에서 왼쪽과 오른쪽에 있는 사람의 수는 같거나 그 차이가 최소가 되어야 함
+"""
 import sys
 
 N = int(sys.stdin.readline())
-total_list = []
-avg_point = 0
+village_list = []
+total_people = 0
 
 for _ in range(N):
     x, a = map(int, sys.stdin.readline().split())
-    avg_point += x
-    total_list.append([x, a])
+    total_people += a
+    village_list.append([x, a])
+village_list.sort()
 
-avg_point = avg_point / N
-
-# 1) 거리 차를 줄이는 방법
-total_list.sort(key=lambda x:(abs(avg_point-x[0]),-x[0]))
-point_length = total_list[0][0]
-
-def find_length(seq) :
-    return abs(total_list[0][0] - seq[0])*seq[1]
-
-result_by_length = sum(map(find_length,total_list))
-
-# 2) 사람이 가장 많은 곳을 없애는 것
-total_list.sort(key=lambda x:(x[1],-abs(avg_point-x[0])),reverse=True)
-point_people = total_list[0][0]
-result_by_people= sum(map(find_length,total_list))
-
-if result_by_people > result_by_length :
-    print(point_length)
-else:
-    print(point_people)
+now_people = village_list[0][1]
+pre_diff = abs(now_people - (total_people / 2))
+for i in range(1,N) :
+    now_people += village_list[i][1]
+    now_diff = abs(now_people - (total_people / 2))
+    if now_people > total_people // 2 :
+        if now_diff > pre_diff :
+            print(village_list[i-1][0])
+            exit()
+        else:
+            print(village_list[i][0])
+            exit()
+    elif now_people == total_people :
+        print(village_list[i][0])
+        exit()
