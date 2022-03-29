@@ -21,33 +21,30 @@
 -> 3면 최소 조합, 2면 최소조합, 1면 최소 값을 구해야 함
 """
 N = int(input())
-dice_val = list(map(int,input().split()))
-idx = 0
-dice_val = [[v,i] for i,v in enumerate(dice_val)]
+arr = list(map(int, input().split()))
+ans = 0
+min_lists = []
+if N == 1:
+    arr.sort()
+    for i in range(5):
+        ans += arr[i]
+else:
+    min_lists.append(min(arr[0], arr[5]))
+    min_lists.append(min(arr[1], arr[4]))
+    min_lists.append(min(arr[2], arr[3]))
+    min_lists.sort()
 
-# 맞은 편에 있는 것만 나올 수 없음 -> 즉, A & F // B & E // D & C -> idx로 치면 0 5 // 1 4 // 2 3 -> idx를 합쳤을 때, 5가 되면 안되네..
-# 1면이 보이는 주사위의 합
-first_min_val = min(dice_val, key=lambda x:x[0])
-one_face_sum = first_min_val[0]*((N-2)*(N-2) + (N-1)*(N-2)*4)
+    # 1, 2, 3 면의 주사위 최소값
+    min1 = min_lists[0]
+    min2 = min_lists[0] + min_lists[1]
+    min3 = sum(min_lists)
 
-# 2면이 보이는 주사위의 합
-second_min_val = [51,7]
-for dice in dice_val :
-    if first_min_val == dice :
-        continue
-    else :
-        if dice[0] < second_min_val[0] and dice[1]+first_min_val[1] != 5 :
-            second_min_val = dice
-two_face_sum = (first_min_val[0]+second_min_val[0])*((N-2)*4 + (N-1)*4)
+    # 1, 2, 3 면의 주사위 개수
+    n1 = 4 * (N - 2) * (N - 1) + (N - 2) ** 2
+    n2 = 4 * (N - 1) + 4 * (N - 2)
+    n3 = 4
 
-# 3면이 보이는 주사위의 합
-third_min_val = [51,7]
-for dice in dice_val :
-    if first_min_val == dice or second_min_val == dice :
-        continue
-    else :
-        if dice[0] < third_min_val[0] and dice[1]+first_min_val[1] != 5 and dice[1]+second_min_val[1] != 5 :
-            third_min_val = dice
-three_face_sum = (first_min_val[0]+second_min_val[0]+third_min_val[0])*4
-
-print(one_face_sum+two_face_sum+three_face_sum)
+    ans += min1 * n1
+    ans += min2 * n2
+    ans += min3 * n3
+print(ans)
