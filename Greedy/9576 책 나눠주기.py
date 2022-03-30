@@ -23,19 +23,20 @@ Out :
 import sys
 for _ in range(int(sys.stdin.readline())) :
     N,M = map(int,sys.stdin.readline().split())
-    book_list = [i for i in range(1,N+1)]
+    book_list = [0 for i in range(N)]
     people_list = []
 
     for _ in range(M):
         people_list.append(list(map(int,sys.stdin.readline().split())))
 
-    people_list.sort(key=lambda x:(x[0],x[1]))
-    book = 1
+    people_list.sort(key=lambda x:x[1]-x[0])
     ans = 0
     for person in people_list :
-        if person[0] <= book <= person[1] :
-            book += 1
+        if book_list[person[0]-1:person[1]].count(0) != 0 :
+            idx = person[0] - 1 + book_list[person[0] - 1:person[1]].index(0)
+            book_list[idx] = 1
             ans += 1
+
     print(ans)
 
 
