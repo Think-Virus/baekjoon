@@ -29,7 +29,7 @@ for _ in range(int(sys.stdin.readline())) :
     for _ in range(M):
         people_list.append(list(map(int,sys.stdin.readline().split())))
 
-    people_list.sort(key=lambda x:x[1]-x[0])
+    people_list.sort(key=lambda x:(x[1],x[0]))
     ans = 0
     for person in people_list :
         if book_list[person[0]-1:person[1]].count(0) != 0 :
