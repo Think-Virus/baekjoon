@@ -39,11 +39,11 @@ for _ in range(N) :
 assignment_list.sort(key =lambda x:(-x[1],-x[0]))
 
 for assignment in assignment_list :
-    if day_list[assignment[0]-1] == 0 :
-        day_list[assignment[0]-1] = assignment[1]
-    elif day_list[:assignment[0]-1].count(0) != 0 :
-        tmp = day_list[:assignment[0]-1][::-1]
-        tmp_idx = len(tmp)-1 - tmp.index(0)
-        day_list[tmp_idx] = assignment[1]
+    idx_deadline = assignment[0]-1
+    if day_list[idx_deadline] == 0 :
+        day_list[idx_deadline] = assignment[1]
+    elif day_list[:idx_deadline+1].count(0) != 0 :
+        tmp = day_list[:idx_deadline+1][::-1]
+        day_list[idx_deadline - tmp.index(0)] = assignment[1]
 
 print(sum(day_list))
