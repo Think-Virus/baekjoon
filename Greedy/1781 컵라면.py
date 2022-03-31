@@ -27,23 +27,36 @@
 마지막 날에 할 수 있는 건 마지막 날에 처리하자
 그러면 날짜별로 큰 데드라인부터 확인..? N부터 거꾸로 내려가면 될듯
 """
+
+"""
+정답 확인
+
+데드라인에 맞춰서 문제를 풀어 가장 많은 컵라면을 얻어야 한다.
+가장 많은 컵라면을 얻기 위해 우선 데드라인을 기준으로 오름차순 정렬한다.
+
+그리고 heapq를 이용하여 데드라인 순으로 각 문제의 컵라면 수를 heapq 리스트에 추가한다.
+리스트에 추가한 후 데드라인과 리스트의 길이를 비교한다.
+
+리스트의 길이가 데드라인 보다 크다면, 데드라인을 초과한 것으로 pop을 이용하여 리스트에 있는 원소중
+컵라면 수가 가장 작은 것을 제거한다.
+반복문이 끝나면 최대의 컵라면 수를 구할 수 있다.
+"""
 import sys
+import heapq
+
 stdin = sys.stdin
 N = int(stdin.readline())
-day_list = [0 for i in range(N)]
 assignment_list = []
+noodle_list = []
 
 for _ in range(N) :
     assignment_list.append(list(map(int,stdin.readline().split())))
 
-assignment_list.sort(key =lambda x:(-x[1],-x[0]))
+assignment_list.sort(key =lambda x:(x[0]))
 
 for assignment in assignment_list :
-    idx_deadline = assignment[0]-1
-    if day_list[idx_deadline] == 0 :
-        day_list[idx_deadline] = assignment[1]
-    elif day_list[:idx_deadline+1].count(0) != 0 :
-        tmp = day_list[:idx_deadline+1][::-1]
-        day_list[idx_deadline - tmp.index(0)] = assignment[1]
+    heapq.heappush(noodle_list,assignment[1])
+    if len(noodle_list) > assignment[0] :
+        heapq.heappop(noodle_list)
+print(sum(noodle_list))
 
-print(sum(day_list))
