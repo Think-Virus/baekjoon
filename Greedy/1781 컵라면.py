@@ -33,13 +33,15 @@ N = int(stdin.readline())
 day_list = [0 for i in range(N)]
 assignment_list = []
 
-for i in range(N) :
+for _ in range(N) :
     assignment_list.append(list(map(int,stdin.readline().split())))
 
 assignment_list.sort(key =lambda x:(-x[1],-x[0]))
 
 for assignment in assignment_list :
-    if day_list[assignment[0]-1] == 0 :
-        day_list[assignment[0]-1] = assignment[1]
+    for i in range(assignment[0]-1,-1,-1) :
+        if day_list[i] == 0 :
+            day_list[i] = assignment[1]
+            break
 
 print(sum(day_list))
