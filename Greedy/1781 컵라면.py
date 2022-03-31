@@ -23,21 +23,23 @@
 데드라인       1   1   1   3   2   2   6
 컵라면 수   1   2   1   4   4   5   1
 이럴 경우에 아 컵라면 수가 우선이면 괜찮을라나??
-도전
+
+마지막 날에 할 수 있는 건 마지막 날에 처리하자
+그러면 날짜별로 큰 데드라인부터 확인..? N부터 거꾸로 내려가면 될듯
 """
 import sys
 stdin = sys.stdin
-
+N = int(stdin.readline())
+day_list = [0 for i in range(N)]
 assignment_list = []
-for i in range(int(stdin.readline())) :
+
+for i in range(N) :
     assignment_list.append(list(map(int,stdin.readline().split())))
 
 assignment_list.sort(key =lambda x:(-x[1],-x[0]))
 
-day = 0
-ans = 0
 for assignment in assignment_list :
-    if assignment[0] > day :
-        ans += assignment[1]
-        day +=1
-print(ans)
+    if day_list[assignment[0]-1] == 0 :
+        day_list[assignment[0]-1] = assignment[1]
+
+print(sum(day_list))
