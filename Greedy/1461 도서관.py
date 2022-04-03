@@ -15,76 +15,39 @@ Out :
 정렬문제인거같고.. 일단 한 방향으로 쭉 가는 게 맞지
 가까운 곳부터 가는 게 맞음 -> 왜냐면 결국 책 다시 가지러 0으로 가야하기 때문
 - 값과 + 값 중 가까운 곳을 계속 확인해야 할듯
+
+아 풀이방식 자체가 틀린 건 아니었네...
+1. 음수와 양수를 나눈다.
+2. 절대값이 큰 수부터 M개씩 분류
+3. 각 묶음에서 절대값이 큰 수만큼 움직이면 됨
+4. 움직여야 하는 값이 가장 큰 묶음은 돌아오지 않음
 """
-N,M = map(int,input().split())
-position_list = list(map(int,input().split()))
-position_list.sort()
-plus_position_list = []
-minus_position_list = []
-for i in range(N) :
-    if position_list[i] > 0 :
-        plus_position_list = position_list[i:]
-        minus_position_list.sort()
-        break
-    else:
-        minus_position_list.append(-1 * position_list[i])
+n, m = map(int, input().split())
+book = list(map(int, input().split()))
 
-ans = 0
-while plus_position_list and minus_position_list : # 둘 다 가득 차 있을 때만 사용
-    if len(plus_position_list) < M and len(minus_position_list) < M : # 두 방향 모두 M보다 양이 적을 때
-        if plus_position_list[-1] < minus_position_list[-1] : # 음수 위치에 있는 책이 더 먼 경우
-            ans += plus_position_list[-1]*2
-            plus_position_list = []
-        else:
-            ans += minus_position_list[-1]*2
-            minus_position_list = []
-    elif len(plus_position_list) < M : # 양수 진영만 M보다 작을 때
-        if plus_position_list[-1] < minus_position_list[M-1] : # 음수 위치에 있는 책이 더 먼 경우
-            ans += plus_position_list[-1]*2
-            plus_position_list = []
-        else:
-            ans += minus_position_list[M-1]*2
-            minus_position_list = minus_position_list[M-1:]
-            if minus_position_list :
-                minus_position_list = minus_position_list[1:] # IndexError 방지
-    elif len(minus_position_list) < M : # 음수 진영만 M보다 작을 때
-        if plus_position_list[M-1] < minus_position_list[-1] : # 음수 위치에 있는 책이 더 먼 경우
-            ans += plus_position_list[M-1]*2
-            plus_position_list = plus_position_list[M-1:]
-            if plus_position_list :
-                plus_position_list = plus_position_list[1:] # IndexError 방지
-        else:
-            ans += minus_position_list[-1]*2
-            minus_position_list = []
-    else:
-        if plus_position_list[M-1] < minus_position_list[M-1] : # 음수 위치에 있는 책이 더 먼 경우
-            ans += plus_position_list[M-1]*2
-            plus_position_list = plus_position_list[M-1:]
-            if plus_position_list :
-                plus_position_list = plus_position_list[1:] # IndexError 방지
-        else:
-            ans += minus_position_list[M-1]*2
-            minus_position_list = minus_position_list[M-1:]
-            if minus_position_list :
-                minus_position_list = minus_position_list[1:] # IndexError 방지
+# 음수, 양수 나누기
+left = []
+right = []
+for item in book:
+    if item < 0:
+        left.append(item)
+    elif item > 0:
+        right.append(item)
 
-while plus_position_list :
-    if len(plus_position_list) < M :# M 개보다 적게 남았을 때
-        ans += plus_position_list[-1]
-        break
-    else:
-        ans += plus_position_list[M - 1] * 2
-        plus_position_list = plus_position_list[M - 1:]
-        if plus_position_list:
-            plus_position_list = plus_position_list[1:]  # IndexError 방지
+distance = []
+left.sort()
+for i in range(len(left) // m):
+    distance.append(abs(left[m * i]))
+if len(left) % m > 0:
+    distance.append(abs(left[(len(left) // m) * m]))
 
-while minus_position_list :
-    if len(minus_position_list) < M :# M 개보다 적게 남았을 때
-        ans += minus_position_list[-1]
-        break
-    else:
-        ans += minus_position_list[M - 1] * 2
-        minus_position_list = minus_position_list[M - 1:]
-        if minus_position_list:
-            minus_position_list = minus_position_list[1:]  # IndexError 방지
-print(ans)
+right.sort(reverse=True)
+for i in range(len(right) // m):
+    distance.append(right[m * i])
+if len(right) % m > 0:
+    distance.append(right[(len(right) // m) * m])
+
+distance.sort()
+result = distance.pop()
+result += 2 * sum(distance)
+print(result)
