@@ -18,8 +18,9 @@ for i in range(n): # 모든 단어에 대해서
         else:   # 자리에 없으면 새로 추가 ( 10의 자리면 10 )
             alpha_dict[alpha[i][j]] = 10 ** (len(alpha[i])-j-1)
 
-for val in alpha_dict.values(): # dict에 저장된 수들을 모두 리스트에 추가
-    numList.append(val)
+# for val in alpha_dict.values(): # dict에 저장된 수들을 모두 리스트에 추가
+#     numList.append(val)
+numList = list(alpha_dict.values())
 
 numList.sort(reverse=True) # 수들을 내림차순 정렬
 
