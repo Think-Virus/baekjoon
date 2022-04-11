@@ -48,6 +48,14 @@ check_2 = amount // 2 # 2의 개수
 다음은 2 -> check_2가 2개 +1개 필요    
 """
 
+"""
+정답 코드 확인 (작은 값)
+1. 우선 성냥이 2개부터 10개일 때를 직접 구해보면 ans와 같이 나오는 것을 알 수 있다.
+2. 10보다 작은 경우는 그대로 answer_min으로 출력한다.
+3. 그렇지 않은 경우에는 자릿수를 제일 적게 사용하기 위해 가장 많은 7개의 성냥을 사용하는 8로 수를 채운다.
+4. 7로 나누어 떨어지지 않는 경우를 예외로 처리한다.
+"""
+
 import sys
 
 n_l = []
@@ -55,35 +63,33 @@ for _ in range(int(sys.stdin.readline())) :
     n_l.append(int(sys.stdin.readline()))
 
 for i in n_l :
-    min_amount = i
-    max_amount = min_amount
-
-    # 최소값 구하기
-    min_val = ''
-    while min_amount > 0 :
-        if min_amount >= 7 and (min_amount % 7 == 0 or min_amount // 7 > 1 or (min_amount // 7 > 0 and min_amount % 7 > 1)) :
-             min_val = '8'+min_val
-             min_amount -= 7
-        elif min_amount >= 6 :
-            min_amount -= 6
-            if min_amount > 0 :
-                min_val = '0'+min_val
+    # 작은 수 구하기
+    ans = [0, 0, 1, 7, 4, 2, 6, 8, 10, 18, 22]
+    n = i
+    if n <= 10:
+        min_val = ans[n]
+    else:
+        min_val = ''
+        while n > 0:
+            n -= 7
+            if n >= 0:
+                min_val += '8'
             else:
-                min_val = '6'+min_val
-        elif min_amount >= 5 :
-            min_amount -= 5
-            min_val = '2'+min_val
-        elif min_amount >= 4 :
-            min_amount -= 4
-            min_val = '4' + min_val
-        elif min_amount >= 3:
-            min_amount -= 3
-            min_val = '7' + min_val
-        else :
-            min_amount -= 2
-            min_val = '1' + min_val
+                n += 7
+                break
+        small = {2: '1', 5: '2', 6: '6'}
+        if n in small:
+            min_val = small[n] + min_val
+        else:
+            if n == 1:
+                min_val = '10' + min_val[1:] # 성냥이 1이 남았으면 ...88로 되어 있는 것에서 하나 빼서 성냥 갯수가 8개 남은 것이므로 처리하여 10으로 만듦
+            elif n == 3:
+                min_val = '200' + min_val[2:] # 성냥이 3이 남았으면 ...88로 되어 있는 것에서 두개 빼서 성냥 갯수가 17개 남은 것이므로 처리하여 200으로 만듦
+            elif n == 4:
+                min_val = '20' + min_val[1:] # 성냥이 4이 남았으면 ...88로 되어 있는 것에서 하나 빼서 성냥 갯수가 11개 남은 것이므로 처리하여 10으로 만듦
 
     # 최대값 찾기
+    max_amount = i
     check_2 = max_amount // 2
     if max_amount % 2 == 0 :
         max_val = '1' * check_2
