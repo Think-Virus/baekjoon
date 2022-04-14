@@ -10,8 +10,8 @@
 # 그 최댓값과 각 그룹을 구성하는 구슬의 개수를 찾아 출력하는 프로그램을 작성하시오.
 
 # 입력 :
-# 첫째 줄에 구슬의 개수 N과 그룹의 수 M이 주어진다.
-# 둘째 줄에는 각 구슬이 적혀진 숫자가 왼쪽부터 차례로 주어진다. N은 300 이하의 자연수, M은 N이하의 자연수이며,
+# 첫째 줄에 쪽부터 차례로 주어진다구슬의 개수 N과 그룹의 수 M이 주어진다.
+# # 둘째 줄에는 각 구슬이 적혀진 숫자가 왼. N은 300 이하의 자연수, M은 N이하의 자연수이며,
 # 구슬에 적혀진 숫자는 100 이하의 자연수이다.
 
 # 출력 :
@@ -44,7 +44,10 @@ while pre_max_val >= max_val :
     pre_max_val = max_val
     tmp_list = list(map(sum, deque_list))
     min_idx = tmp_list.index(min(tmp_list)) # 가장 값이 작은 그룹
-    deque_list[min_idx].append(deque_list[min_idx+1].popleft())
+    if min_idx != len(tmp_list)-1 : # 최소값이 마지막이 아닐 때
+        deque_list[min_idx].append(deque_list[min_idx+1].popleft())
+    else : # 마지막일 때
+        deque_list[min_idx].appendleft(deque_list[min_idx - 1].pop())
     max_val = max(map(sum,deque_list))
 
 if not pre_max_val >= max_val :
