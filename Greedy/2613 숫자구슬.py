@@ -28,34 +28,80 @@ Out :
 17
 4 2 2
 """
-from collections import deque
-N,M = map(int,input().split())
-marble_list = deque(map(int,input().split()))
-deque_list = []
-for _ in range(M-1) :
-    deque_list.append(deque([marble_list.popleft()]))
-deque_list.append(marble_list)
 
-pre_max_val = 100**300+2
-max_val = 100**300+1
+"""
+모르겠어서 알고리즘 분류 봤는데..
+    - 다이나믹 프로그래밍
+    - 그리디 알고리즘
+    - 이분 탐색
+이분 탐색 이용해야 할 듯
+"""
 
-while pre_max_val >= max_val :
-    # 가장 큰 그룹부터 확인
-    pre_max_val = max_val
-    tmp_list = list(map(sum, deque_list))
-    min_idx = tmp_list.index(min(tmp_list)) # 가장 값이 작은 그룹
-    if min_idx != len(tmp_list)-1 : # 최소값이 마지막이 아닐 때
-        deque_list[min_idx].append(deque_list[min_idx+1].popleft())
-    else : # 마지막일 때
-        deque_list[min_idx].appendleft(deque_list[min_idx - 1].pop())
-    max_val = max(map(sum,deque_list))
+"""
+모르겠어서 정답 코드 확인
+N 개의 구슬을 M개의 그룹으로 분할하고 각 그룹들의 구슬의 값의 합의 최댓값을 최소로 만드는 문제이다.
+(구슬의 값의 최댓값) ~ (구슬의 값의 총합)의 범위에서 이분 탐색을 해서 '그룹들의 구슬의 합의 최댓값이 
+a 이하가 되도록 구슬을 M개의 그룹으로 나눌 수 있는가?'의 문제로 바꿀 수 있다.
 
-if not pre_max_val >= max_val :
-    deque_list[min_idx+1].appendleft(deque_list[min_idx].pop())
-print(max(map(sum,deque_list)))
-for i in map(len,deque_list) :
-    print(i, end=' ')
+이분 탐색으로 답을 찾았으면 M개의 그룹으로 분할한 후 각 그룹의 구슬의 수를 출력하면 된다.
+만약 구한 그룹의 개수가 M개가 되지 않는다면 다른 그룹을 한번 더 나누어 준다.
+예를 들어 M = 3이고, 각 그룹에 속한 구슬 수가 6 2라면 그룹 수가 하나 모자르므로
+6을 분할해서 1 5 2로 출력하도록 하는 것이다. 
+
+1. 이분탐색으로 구현하는 문제이다.
+2. left 값을 공의 최솟값 right값을 모든공의 합으로 탐색한다.
+3. 정답은 공의 최댓값보다는 커야한다.
+4. (최댓값이 최소가 되도록 하는 경우가 둘 이상이라면 그 중 하나만을 출력한다.) 라고 명시되어 있기 때문에 공의 그룹이 m 보다 작을경우 공을 계속해서 쪼개준다.
+"""
+import math
+
+ans = 0
+
+n, m = map(int, input().split())
+ball = list(map(int, input().split()))
+lt, rt = min(ball), sum(ball)
+lst = []
 
 
+def groupCnt(x):
+    cnt = 1
+    tot = 0
+    tmp = []
+    ballCnt = 0
+    for item in ball:
+        if tot + item > x:
+            cnt += 1
+            tot = item
+            tmp.append(ballCnt)
+            ballCnt = 1
+        else:
+            tot += item
+            ballCnt += 1
+    if ballCnt:
+        tmp.append(ballCnt)
+    return tmp, cnt
 
 
+while lt <= rt:
+    mid = (lt + rt) // 2
+    tmp, cnt = groupCnt(mid)
+    if cnt <= m and max(ball) <= mid:
+        lst = tmp
+        ans = mid
+        rt = mid-1
+    else:
+        lt = mid+1
+
+print(ans)
+while len(lst) < m:
+    for i in range(len(lst)):
+        if lst[i] > 1:
+            tmp = lst[i]
+            del lst[i]
+            lst.insert(i, math.ceil(tmp/2))
+            lst.insert(i, math.floor(tmp/2))
+            if len(lst) == m:
+                break
+
+for x in lst:
+    print(x, end=' ')
