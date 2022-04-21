@@ -18,6 +18,8 @@ ab
 Out :
 1
 """
+import heapq
+
 S = list(enumerate(input()))
 T = input()
 T_len = len(T)
@@ -26,18 +28,24 @@ anser = 0
 while True and S :
     tmp = 0
     pre_idx = 0
+    candidate_S = []
     for t in T :
-        for i,s in enumerate(S) :
+        while S :
+            s = heapq.heappop(S)
             if s[1] == t :
                 if pre_idx > s[0] :
                     continue
-                del S[i]
                 pre_idx = s[0]
                 tmp += 1
                 if T_len == tmp:
                     anser += 1
                 break
+            else:
+                candidate_S.append(s)
+
     if T_len != tmp :
         break
 
+    while candidate_S:
+        heapq.heappush(S, heapq.heappop(candidate_S))
 print(anser)
