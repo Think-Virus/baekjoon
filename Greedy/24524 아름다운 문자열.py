@@ -30,8 +30,7 @@ while True and S :
         for i,s in enumerate(S) :
             if s[1] == t :
                 if pre_idx > s[0] :
-                    tmp = -1
-                    break
+                    continue
                 del S[i]
                 pre_idx = s[0]
                 tmp += 1
