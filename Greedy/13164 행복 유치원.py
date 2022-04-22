@@ -21,32 +21,17 @@ In
 Out
 3
 
-이분 탐색 문제일듯한데
+큰 간격을 없앤다라는 개념으로 갔구나... 하..
 """
 import sys
 
 N, K = map(int, sys.stdin.readline().split())
-children_list = [list(map(int, sys.stdin.readline().split()))]
+children_list = list(map(int, sys.stdin.readline().split()))
 
+costs = []
+for i in range(N-1) :
+    costs.append(children_list[i+1] - children_list[i])
 
-def find_diff(seq) :
-    return seq[-1] - seq[0]
+costs.sort(reverse=True)
 
-
-cnt = 1
-while cnt != K :
-    # 큰 값과 작은 값의 차이가 가장 큰 그룹부터 선정
-    diff_list = list(map(find_diff,children_list))
-    max_seq_idx = diff_list.index(max(diff_list))
-    max_seq_list = children_list.pop(max_seq_idx)
-    mid_val = sum(max_seq_list) / len(max_seq_list)
-    mid_idx = len(max_seq_list)//2
-    if mid_val <= max_seq_list[mid_idx] :
-        children_list.append(max_seq_list[:mid_idx])
-        children_list.append(max_seq_list[mid_idx:])
-    else:
-        children_list.append(max_seq_list[:mid_idx+1])
-        children_list.append(max_seq_list[mid_idx+1:])
-    cnt +=1
-
-print(sum(map(find_diff,children_list)))
+print(sum(costs[K-1:]))
