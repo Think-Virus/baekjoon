@@ -66,19 +66,26 @@ def getValuePType(i, ptype):
 
 
 # Recursion
-def putRockRecursion(i) -> int:
-    for current_p in PType:
-        if i == 0:
-            return getValuePType(i, current_p)
-        else:
-            if current_p == PType.P1:
-                return getValuePType(i, current_p) + max(putRockRecursion(i - 1), putRockRecursion(i - 1))
-            elif current_p == PType.P2:
-                return getValuePType(i, current_p) + putRockRecursion(i - 1)
-            elif current_p == PType.P3:
-                return getValuePType(i, current_p) + max(putRockRecursion(i - 1), putRockRecursion(i - 1))
-            elif current_p == PType.P4:
-                return getValuePType(i, current_p) + putRockRecursion(i - 1)
+def putRockRecursion():
+    max_var = float('-inf')
+    for p in PType:
+        tmp = _putRockRecursion(N - 1, p)
+        max_var = max(max_var, tmp)
+    return max_var
 
 
-print(putRockRecursion(N - 1))
+def _putRockRecursion(i, current_p) -> int:
+    if i == 0:
+        return getValuePType(i, current_p)
+    else:
+        if current_p == PType.P1:
+            return getValuePType(i, current_p) + max(_putRockRecursion(i - 1, PType.P2), _putRockRecursion(i - 1, PType.P3))
+        elif current_p == PType.P2:
+            return getValuePType(i, current_p) + _putRockRecursion(i - 1, PType.P4)
+        elif current_p == PType.P3:
+            return getValuePType(i, current_p) + max(_putRockRecursion(i - 1, PType.P1), _putRockRecursion(i - 1, PType.P2))
+        elif current_p == PType.P4:
+            return getValuePType(i, current_p) + _putRockRecursion(i - 1, PType.P2)
+
+
+print(putRockRecursion())
