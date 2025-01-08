@@ -37,15 +37,18 @@
         • w_1p if i = 1
         • w_ip + max(c_(i-1)q) if i > 1 [q는 p일 경우 이전에 가능한 타입들]
 """
+import random
+import time
 from enum import Enum, auto
 
-N = 8
-MATRIX = [
-    [6, 7, 12, -5, 5, 3, 11, 3],
-    [-8, 10, 14, 9, 7, 13, 8, 5],
-    [11, 12, 7, 4, 8, -2, 9, 4],
-]
+N = 100
+# MATRIX = [
+#     [6, 7, 12, -5, 5, 3, 11, 3],
+#     [-8, 10, 14, 9, 7, 13, 8, 5],
+#     [11, 12, 7, 4, 8, -2, 9, 4],
+# ]
 
+MATRIX = [[random.randint(-100,100) for _ in range(N)] for _ in range(3)]
 
 class PType(Enum):
     P1 = auto()
@@ -110,6 +113,7 @@ def pebbleDynamic():
 
     return max([pebble_matrix[j][N] for j in range(4)])
 
-
-print(pebbleRecursion())
-print(pebbleDynamic())
+start = time.time()
+print(f"Recursion : (결과){pebbleRecursion()} (소요 시간){time.time()-start:0.6f}")
+start = time.time()
+print(f"Dynamic : (결과){pebbleDynamic()} (소요 시간){time.time()-start:0.6f}")
