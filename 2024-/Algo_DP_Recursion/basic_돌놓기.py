@@ -66,26 +66,50 @@ def getValuePType(i, ptype):
 
 
 # Recursion
-def putRockRecursion():
+def pebbleRecursion():
     max_var = float('-inf')
     for p in PType:
-        tmp = _putRockRecursion(N - 1, p)
+        tmp = _pebbleRecursion(N - 1, p)
         max_var = max(max_var, tmp)
     return max_var
 
 
-def _putRockRecursion(i, current_p) -> int:
+def _pebbleRecursion(i, current_p) -> int:
     if i == 0:
         return getValuePType(i, current_p)
     else:
         if current_p == PType.P1:
-            return getValuePType(i, current_p) + max(_putRockRecursion(i - 1, PType.P2), _putRockRecursion(i - 1, PType.P3))
+            return getValuePType(i, current_p) + max(_pebbleRecursion(i - 1, PType.P2), _pebbleRecursion(i - 1, PType.P3))
         elif current_p == PType.P2:
-            return getValuePType(i, current_p) + _putRockRecursion(i - 1, PType.P4)
+            return getValuePType(i, current_p) + _pebbleRecursion(i - 1, PType.P4)
         elif current_p == PType.P3:
-            return getValuePType(i, current_p) + max(_putRockRecursion(i - 1, PType.P1), _putRockRecursion(i - 1, PType.P2))
+            return getValuePType(i, current_p) + max(_pebbleRecursion(i - 1, PType.P1), _pebbleRecursion(i - 1, PType.P2))
         elif current_p == PType.P4:
-            return getValuePType(i, current_p) + _putRockRecursion(i - 1, PType.P2)
+            return getValuePType(i, current_p) + _pebbleRecursion(i - 1, PType.P2)
 
 
-print(putRockRecursion())
+# Dynamic
+"""
+    c_ip =
+        • w_1p if i = 1
+        • w_ip + max(c_(i-1)q) if i > 1 [q는 p일 경우 이전에 가능한 타입들]
+    c_(i-1)q를 저장하고 불러오는 방식
+"""
+
+
+def pebbleDynamic():
+    pebble_matrix = [
+        [0] * (N + 1) for _ in range(4)
+    ]
+
+    for i in range(1, N + 1):
+        pebble_matrix[0][i] = getValuePType(i - 1, PType.P1) + max(pebble_matrix[1][i - 1], pebble_matrix[2][i - 1])
+        pebble_matrix[1][i] = getValuePType(i - 1, PType.P2) + pebble_matrix[3][i - 1]
+        pebble_matrix[2][i] = getValuePType(i - 1, PType.P3) + max(pebble_matrix[0][i - 1], pebble_matrix[1][i - 1])
+        pebble_matrix[3][i] = getValuePType(i - 1, PType.P4) + pebble_matrix[1][i - 1]
+
+    return max([pebble_matrix[j][N] for j in range(4)])
+
+
+print(pebbleRecursion())
+print(pebbleDynamic())
