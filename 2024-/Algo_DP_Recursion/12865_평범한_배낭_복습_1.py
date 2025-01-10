@@ -23,7 +23,7 @@ def knapsack(K: int, items: list[list[int]]) -> int:
 
     for w, v in items:
         for j in range(K, w - 1, -1):
-            dp[j] = max(dp[j], dp[K - w] + v)
+            dp[j] = max(dp[j], dp[j - w] + v)
 
     return dp[K]
 
