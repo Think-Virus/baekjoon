@@ -39,16 +39,33 @@ input
 트리를 사용해야 하지 않나 싶은데
 그게 가장 속도가 빠르지 않나 싶음
 """
-
+import math
 import sys
 
 
 def print_mid_value(inputs: list[int]) -> None:
-    now = []
-    for value in inputs:
-        now.append(value)
-        now.sort()
-        print(now[round(len(now) / 2 + 0.1)-1])
+    prev = [inputs[0]]
+    print(inputs[0])
+    for value in inputs[1:]:
+        idx_mid = math.ceil(len(prev) / 2) - 1
+        not_added = True
+        if value > prev[idx_mid]:
+            for j in range(idx_mid, len(prev)):
+                if prev[j] > value:
+                    prev.insert(j, value)
+                    not_added = False
+            if not_added:
+                prev.append(value)
+        else:
+            for j in range(idx_mid, 0, -1):
+                if prev[j] < value:
+                    prev.insert(j, value)
+                    not_added = False
+            if not_added:
+                prev.insert(0, value)
+        idx_mid = math.ceil(len(prev) / 2) - 1
+        # print(f"idx : {idx_mid}, prev : {prev}")
+        print(prev[idx_mid])
     return
 
 
