@@ -41,42 +41,14 @@ input
 """
 
 import sys
-from typing import Optional
-
-
-class TreeNode(object):
-    def __init__(self, value):
-        self.value: int = value
-        self.left: Optional[TreeNode] = None
-        self.right: Optional[TreeNode] = None
-        self.count: int = 0
-
-    def add(self, n_tree):
-        self.count += 1
-        if self.value > n_tree.value:
-            if not self.right: # if empty
-                self.right = n_tree
-            else: # not empty
-                if self.right.value < n_tree.value:
-                    self.right.add(n_tree)
-                else:
-                    n_tree.right = self.right
-                    n_tree.left = self
-                    self.right = None
-        else:
-            if not self.left:
-                self.left = n_tree
-            else:
-                if self.left.value > n_tree.value:
-                    self.left.add(n_tree)
-                else:
-                    n_tree.left = self.left
 
 
 def print_mid_value(inputs: list[int]) -> None:
-    root = TreeNode(inputs[0])
-    for value in inputs[1:]:
-        root.add(TreeNode(value))
+    now = []
+    for value in inputs:
+        now.append(value)
+        now.sort()
+        print(now[round(len(now) / 2 + 0.1)-1])
     return
 
 
