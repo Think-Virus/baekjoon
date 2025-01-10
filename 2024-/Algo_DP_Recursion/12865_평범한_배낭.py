@@ -14,50 +14,35 @@
 4 8
 3 6
 5 12
-
+---
+접근 방식
+1. 물건을 선택하거나 선택하지 않을 때의 최적값을 계산함
+2. DP 테이블을 정의하고, 작은 문제를 통해 큰 문제를 해결함
+---
+DP 테이블 정의
+- dp[j]를 배낭의 무게 한도가 j일 때 얻을 수 있는 최대 가치로 정의
+- dp 배열의 크기는 K+1 (무게 한도는 0~K까지)
+---
+점화식
+1. 현재 물건을 넣지 않았을 때: dp[j]는 변하지 않음
+2. 현재 물건을 넣을 때: 무게가 W이고, 가치가 V인 현재 물건에 대해,
+    dp[j] = max(dp[j], dp[j-W] + V)
 """
-import copy
 import sys
 
 N, K = map(int, sys.stdin.readline().split())
-WV_list = sorted([list(map(int, sys.stdin.readline().split())) for _ in range(N)], key=lambda wv: wv[1] / wv[0], reverse=True)
-
-"""
-새롭게 배운 점
-data = [list(map(lambda wv: [wv[0], wv[1], wv[1] / wv[0]], list(map(int, sys.stdin.readline().split())))) for _ in range(N)]
-이렇게 했었을 때, ValueError: invalid literal for int() with base 10: 'import' 에러 발생
-이유? -> wv 값이 6으로 들어갔기 때문에 [6, 13]
-왜 그랬을까? lambda를 적용핼 때, map으로 해서 list를 순환하는 식으로 했기에 6으로 되는 게 정상 동작이었음.
-어떻게 해결? -> lambda를 직접 적용하는 식으로 변경함!
-"""
-
-def select_item(WV_list: list, curr_weight=0, curr_sum=0):
-    # Confirm current limit and next action
-    curr_limit = K - curr_weight
-    # is_small = any(w <= curr_limit for w in (wv[0] for wv in WV_list))
-    # is_small = any(wv[0] <= curr_limit for wv in WV_list)
-
-    # Algorithm
-    # 1. If smaller weight item exists in left list, make a new result value.
-    # 2. Else if sum of values in the left list is bigger than current result.
-    while WV_list:
-        for wv in WV_list:
-            if wv[0] <= curr_limit:
-                print(wv)
-                curr_sum += wv[1]
-                curr_weight += wv[0]
-                WV_list.remove(wv)
-                select_item(WV_list, curr_weight, curr_sum)
-                break
-
-        if curr_sum < sum([wv[1] for wv in WV_list]):
-            prev_curr_sum = curr_sum
-            curr_weight = 0
-            curr_sum = 0
+wv_list: list[list[int]] = list([list(map(int, sys.stdin.readline().split())) for _ in range(N)])
 
 
-    return curr_sum
+def knapsack(wv_list: list[list[int]], K) -> int:
+    dp = [0] * (K + 1)
+    for w, v in wv_list:
+        # print(f"{K} ~ {w-1}")
+        for j in range(K, w - 1, -1):
+            # print(f"w: {w} / v: {v} / dp[{j}]: {dp[j]}")
+            # print(dp)
+            dp[j] = max(dp[j], dp[j - w] + v)
+    return dp[K]
 
-print(select_item(copy.deepcopy(WV_list)))
 
-print(WV_list)
+print(knapsack(wv_list, K))
