@@ -35,44 +35,56 @@ input
 2
 5
 ---
-접근법
-트리를 사용해야 하지 않나 싶은데
-그게 가장 속도가 빠르지 않나 싶음
+해결 전략
+- 매 입력마다 정렬해서 중간값을 찾을까?
+    -> N이 100,000이니까 당연히 불가능함
+- 본 문제 해결을 위해 '정렬'이 반드시 필요함
+    - 그렇다면 가장 빠르고 효율적으로 정렬하는 방법은?
+        - Heap!!
+- 여기까지는 PS를 연습해본 이라면 어렵지 않게 도출할 수 있다. 그러나, 문제는 그 다음이다.
+    - "Heap을 사용해볼까"라는 생각이 들었을 때, 많은 이들이 다음과 같은 간단한 Idea를 떠올려볼 것이다.
+    - 무언가 중간 지점을 의미하는 Value를 두고, 그 값을 기준으로 Heap을 구축해볼까?
+        - Value가 매 입력마다 바뀌기 때문에 결국 Linearity가 추가되고, 시간 초과가 날 것이다.
+    - STL Heap을 사용하지 말고, 직접 Heap을 구축한 다음, Tree에서의 높이를 따져서 중간값을 찾아볼까?
+        - 높이와 원소 개수만으로는 선형 코딩 없이 중간값을 특정하기 어렵다.
+    - 위 과정을 통해 Heap 아이디어를 폐기함
+-But, Max Heap과 Min Heap을 동시에 두고, 마치 모래시계처럼 구조를 설계한다면?
+    - 그 다음, 매 입력마다 항상 Max Heap과 Min Heap의 원소 개수 차이가 1이하가 되도록(Max가 더 많게) 만들어주고,
+      동시에 항상 Min Heap의 Top 원소가 Max Heap의 Top 원소보다 크도록 만들어준다.
+
 """
-import math
+import heapq
 import sys
 
 
-def print_mid_value(inputs: list[int]) -> None:
-    prev = [inputs[0]]
-    print(inputs[0])
-    for value in inputs[1:]:
-        idx_mid = math.ceil(len(prev) / 2) - 1
-        not_added = True
-        if value > prev[idx_mid]:
-            for j in range(idx_mid, len(prev)):
-                if prev[j] > value:
-                    prev.insert(j, value)
-                    not_added = False
-            if not_added:
-                prev.append(value)
+def print_mid_value(numbers: list[int]) -> None:
+    max_heap = []
+    min_heap = []
+
+    for number in numbers:
+        if not max_heap or number <= -max_heap[0]:
+            heapq.heappush(max_heap, -number)
+            # print(f"add max_heap: {max_heap}, min_heap: {min_heap}")
         else:
-            for j in range(idx_mid, 0, -1):
-                if prev[j] < value:
-                    prev.insert(j, value)
-                    not_added = False
-            if not_added:
-                prev.insert(0, value)
-        idx_mid = math.ceil(len(prev) / 2) - 1
-        # print(f"idx : {idx_mid}, prev : {prev}")
-        print(prev[idx_mid])
+            heapq.heappush(min_heap, number)
+            # print(f"add max_heap: {max_heap}, min_heap: {min_heap}")
+
+        if len(max_heap) > len(min_heap) + 1:
+            heapq.heappush(min_heap, -heapq.heappop(max_heap))
+            # print(f"adjust max_heap: {max_heap}, min_heap: {min_heap}")
+        elif len(min_heap) > len(max_heap):
+            heapq.heappush(max_heap, -heapq.heappop(min_heap))
+            # print(f"adjust max_heap: {max_heap}, min_heap: {min_heap}")
+
+        print(-max_heap[0])
+
     return
 
 
 def main():
     n = int(sys.stdin.readline())
-    inputs = list(int(sys.stdin.readline()) for _ in range(n))
-    print_mid_value(inputs)
+    numbers = list(int(sys.stdin.readline()) for _ in range(n))
+    print_mid_value(numbers)
 
 
 if __name__ == "__main__":
