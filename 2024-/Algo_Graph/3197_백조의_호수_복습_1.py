@@ -64,6 +64,7 @@ def input_data():
         for j, cell in enumerate(line):
             if cell == 'L':
                 swans.append((i, j))
+                water_queue.append((i, j))
                 lake[i][j] = "."
             elif cell == '.':
                 water_queue.append((i, j))
