@@ -37,135 +37,96 @@
             -> N^2일 경우, 1초 이내는 연산은 10^8 ~ 10^9 연산이 가능함.. 
             - BFS를 써야 할듯
         - 그냥 행렬 쓰면 N^2일텐데...
+    ---
+    위 접근법은 틀림
+정답
+    - 두 개의 BFS 큐 사용
+        - 하나는 빙판이 녹는 과정을 관리 : water_queue
+        - 다른 하나는 백조의 이동 경로를 관리 : swan_queue
+    - 동시에 진행
+        - 매일 빙판이 녹는 과정을 처리하며 물 공간을 확장함
+        - 백조가 물 공간을 따라 이동하며 서로 만나는지 확인
+    - 경계 조건 최소화
+        - 매일의 반복에서 중복 방문 방지를 위해 방문 상태를 별도의 배열로 관리
 """
 import sys
+from collections import deque
 
 
-class Node:
-    def __init__(self, state):
-        self.state = state  # Ice : 1, Water : 0, Swan : -1
-        self.right = None
-        self.left = None
-        self.up = None
-        self.down = None
-        self.row = None
-        self.col = None
-
-
-class Lake:
-    def __init__(self, root=None):
-        self.root = root
-        self.goal = None
-        self.day = 0
-        self.nodes = []
-
-    def insert_node(self, node, total_c):
-        self.nodes.append(node)
-        node.row = (len(self.nodes) - 1) // total_c
-        node.col = (len(self.nodes) - 1) % total_c
-
-        if not self.root and node.state == -1:
-            self.root = node
-        elif node.state == -1:
-            self.goal = node
-
-    def melt(self):
-        freezing_nodes = list(filter(self._is_freezing, self.nodes))
-        self.day += 1
-        for node in freezing_nodes:
-            node.state = 0
-
-    def _is_freezing(self, node):
-        if node.state != 1:  # Water or Swan -> pass
-            return False
-        else:
-            left_node_state = node.left.state if node.left else 2
-            right_node_state = node.right.state if node.right else 2
-            up_node_state = node.up.state if node.up else 2
-            down_node_state = node.down.state if node.down else 2
-
-            return any(state == 0 for state in [left_node_state, right_node_state, up_node_state, down_node_state])
-
-    def find_path(self):
-        visited_nodes = [self.root]
-        queue = [self.root]
-        while queue:
-            node = queue.pop(0)
-            for n in self._directions_not_ice(node):
-                if n not in visited_nodes:
-                    visited_nodes.append(n)
-                    queue.append(n)
-        #
-        # tmp = [[0 for _ in range(2)] for _ in range(10)]
-        # for visited_node in visited_nodes:
-        #     tmp[visited_node.row][visited_node.col] = 1
-        # print(f"---\n{self.day}")
-        # for r in range(10):
-        #     origin = ""
-        #     non_origin = ""
-        #     for c in range(2):
-        #         origin += str(self.nodes[2*r+c].state) + " "
-        #         non_origin += str(tmp[r][c]) + " "
-        #     print(f"{origin}->{non_origin}")
-
-            # print()
-
-        return self.goal in visited_nodes
-
-    def _directions_not_ice(self, node):
-        directions = []
-        if node.right:
-            if node.right.state != 1:
-                directions.append(node.right)
-        if node.left:
-            if node.left.state != 1:
-                directions.append(node.left)
-        if node.up:
-            if node.up.state != 1:
-                directions.append(node.up)
-        if node.down:
-            if node.down.state != 1:
-                directions.append(node.down)
-        return directions
-
-
-def make_lake(r, c, data, lake):
-    for ir, row in enumerate(data):
-        for ic, node in enumerate(row):
-            if ic != c - 1:
-                right_node = data[ir][ic + 1]
-                node.right = right_node
-                right_node.left = node
-            if ic != 0:
-                left_node = data[ir][ic - 1]
-                node.left = left_node
-                left_node.right = node
-            if ir != 0:
-                up_node = data[ir - 1][ic]
-                node.up = up_node
-                up_node.down = node
-            if ir != r - 1:
-                down_node = data[ir + 1][ic]
-                node.down = down_node
-                down_node.up = node
-
-            lake.insert_node(node, c)
-
-
-def main():
+def input_data():
     r, c = map(int, sys.stdin.readline().split())
-    data = [[Node(1 if s == "X" else (0 if s == "." else -1)) for s in sys.stdin.readline()[:-1]] for _ in range(r)]
-    lake = Lake()
+    lake = []
+    swans = []
+    water_queue = deque()
 
-    make_lake(r, c, data, lake)
+    for i in range(r):
+        row = list(sys.stdin.readline().strip())
+        lake.append(row)
+        for j, cell in enumerate(row):
+            if cell == 'L':
+                swans.append((i, j))
+                water_queue.append((i, j))
+                lake[i][j] = '.'
+            elif cell == '.':
+                water_queue.append((i, j))
 
-    is_find = lake.find_path()
-    while not is_find:
-        lake.melt()
-        is_find = lake.find_path()
-
-    print(lake.day)
+    return r, c, lake, swans, water_queue
 
 
-if __name__ == '__main__':
-    main()
+def solve():
+    r, c, lake, swans, water_queue = input_data()
+
+    # Directions: up, down, left, right
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    # BFS for Swan Movement
+    def can_meet(swan_queue, visited, other_swan):
+        next_queue = deque()
+        while swan_queue:
+            x, y = swan_queue.popleft()
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < r and 0 <= ny < c and not visited[nx][ny]:
+                    visited[nx][ny] = True
+                    if (nx, ny) == other_swan:
+                        return True, next_queue
+                    if lake[nx][ny] == '.':
+                        swan_queue.append((nx, ny))
+                    elif lake[nx][ny] == 'X':
+                        next_queue.append((nx, ny))
+        return False, next_queue
+
+    # BFS for Ice Melting
+    def melt_ice():
+        next_water_queue = deque()
+        while water_queue:
+            x, y = water_queue.popleft()
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < r and 0 <= ny < c and lake[nx][ny] == 'X':
+                    lake[nx][ny] = '.'
+                    next_water_queue.append((nx, ny))
+        return next_water_queue
+
+    # Initialize
+    swan1, swan2 = swans
+    swan_queue = deque([swan1])
+    swan_visited = [[False] * c for _ in range(r)]
+    swan_visited[swan1[0]][swan1[1]] = True
+
+    day = 0
+    while True:
+        # Check if swans can meet
+        meet, swan_queue = can_meet(swan_queue, swan_visited, swan2)
+        if meet:
+            print(day)
+            return
+
+        # Melt ice and increment day
+        water_queue = melt_ice()
+        day += 1
+
+
+if __name__ == "__main__":
+    solve()
+
