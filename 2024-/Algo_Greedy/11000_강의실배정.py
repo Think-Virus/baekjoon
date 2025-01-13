@@ -78,31 +78,34 @@
 
 """
 import sys
+import heapq
 
 
-def input_data() -> list[list[int]]:
+def input_data():
     n = int(sys.stdin.readline())
-    classes = sorted([list(map(int, sys.stdin.readline().split())) for _ in range(n)], key=lambda x: (x[0], x[1]))
+    classes = []
+    for _ in range(n):
+        heapq.heappush(classes, list(map(int, sys.stdin.readline().split())))
     return classes
 
 
 def solve():
-    classes = input_data()
+    heap = input_data()
 
     def print_max_room(all_classes):
-        left_classes = all_classes[1:]
-        room_classes = [all_classes[0]]
+        room_classes = [heapq.heappop(all_classes)]
         max_room = 0
 
-        for start, end in left_classes:
-            room_classes = list(filter(lambda x: x[1] > start, room_classes))
-            room_classes.append([start, end])
+        while all_classes:
+            new_class = heapq.heappop(all_classes)
+            room_classes = list(filter(lambda x: x[1] > new_class[0], room_classes))
+            room_classes.append(new_class)
             cur_room = len(room_classes)
             if cur_room > max_room:
                 max_room = cur_room
         print(max_room)
 
-    print_max_room(classes)
+    print_max_room(heap)
 
 
 if __name__ == '__main__':
