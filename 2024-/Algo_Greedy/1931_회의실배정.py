@@ -48,19 +48,9 @@ import sys
 
 def solve():
     n = int(sys.stdin.readline())
-    meetings = []
-    cnt = 0
-    for _ in range(n):
-        start, end = map(int, sys.stdin.readline().split())
-        if start == end:
-            cnt += 1
-        else:
-            meetings.append([start, end])
-    meetings = sorted(meetings, key=lambda x: (x[1], -x[0]))
-    print(meetings)
+    meetings = sorted([list(map(int, sys.stdin.readline().split())) for _ in range(n)], key=lambda x: (x[1], -x[0]))
     end = meetings[0][1]
-    cnt += 1
-
+    cnt = 1
     for meeting in meetings[1:]:
         if end <= meeting[0]:
             end = meeting[1]
