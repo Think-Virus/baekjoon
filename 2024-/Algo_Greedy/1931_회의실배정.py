@@ -21,7 +21,19 @@
     4 7
     1. 시작 시간이 빠른 순으로 (1,4) (4, 7)
     2. 종료 시간이 빠른 순으로 (1,4)
-    3. 소요 시간이 가장 작은 순으로 (3,4) (4,7) -> 이것이 맞을 것 같음
+    3. 소요 시간이 가장 작은 순으로 (3,4) (4,7)
+        -> 이것이 맞을 것 같음
+        -> 아니었음
+        반례 :
+            1 2
+            1 3
+            4 6
+            5 6
+            9 10
+            7 9
+            10 10
+            3
+            but 최대 4개까지 가능함
     ---
     How?
         - 각 시간 별로 cell을 만들어서 한다? -> 메모리 초과 일어날 것
@@ -36,13 +48,24 @@ import sys
 
 def solve():
     n = int(sys.stdin.readline())
-    meetings = sorted([list(map(int, sys.stdin.readline().split())) for _ in range(n)], key=lambda x: x[1] - x[0])
+    meetings = []
     cnt = 0
+    for _ in range(n):
+        start, end = map(int, sys.stdin.readline().split())
+        if start == end:
+            cnt += 1
+        else:
+            meetings.append([start, end])
+    meetings = sorted(meetings, key=lambda x: (x[1], -x[0]))
+    print(meetings)
+    end = meetings[0][1]
+    cnt += 1
 
-    while meetings:
-        cnt += 1
-        cur_meeting = meetings.pop(0)
-        meetings = list(filter(lambda x: x[0] >= cur_meeting[1] or x[1] <= cur_meeting[0], meetings))
+    for meeting in meetings[1:]:
+        if end <= meeting[0]:
+            end = meeting[1]
+            cnt += 1
+
     print(cnt)
 
 
