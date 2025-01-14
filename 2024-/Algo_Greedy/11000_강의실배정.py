@@ -62,18 +62,6 @@
                         left_classes = []
                         max_room = 2
                         cur_room = 2
-                - pseudo 코드
-                left_classes = [...]
-                left_class sort in order of class's start time
-                room_class = [left_class.pop(0)]
-                max_room = 0
-                for new_start, new_end in left_classes:
-                    room_class = list(filter(left_classes, key=lambda x:x[1]>new_start))
-                    room_class.append([new_start, new_end])
-                    cur_room = len(room_class)
-                    if cur_room > max_room:
-                        max_room = cur_room
-                print(max_room)
 
 
 """
@@ -81,31 +69,28 @@ import sys
 import heapq
 
 
-def input_data():
+def input_data()->(int, list[list[int]]):
     n = int(sys.stdin.readline())
-    classes = []
-    for _ in range(n):
-        heapq.heappush(classes, list(map(int, sys.stdin.readline().split())))
-    return classes
+    times = sorted([list(map(int, sys.stdin.readline().split())) for _ in range(n)], key=lambda x: (x[0], x[1]))
+    return times
 
 
 def solve():
-    heap = input_data()
+    times = input_data()
 
-    def print_max_room(all_classes):
-        room_classes = [heapq.heappop(all_classes)]
-        max_room = 0
+    def print_max_room(times):
+        rooms = [times[0][1]]
+        for start, end in times[1:]:
+            if start < rooms[0]:
+                heapq.heappush(rooms, end)
+            else:
+                heapq.heappop(rooms)
+                heapq.heappush(rooms, end)
 
-        while all_classes:
-            new_class = heapq.heappop(all_classes)
-            room_classes = list(filter(lambda x: x[1] > new_class[0], room_classes))
-            room_classes.append(new_class)
-            cur_room = len(room_classes)
-            if cur_room > max_room:
-                max_room = cur_room
-        print(max_room)
+        print(len(rooms))
 
-    print_max_room(heap)
+
+    print_max_room(times)
 
 
 if __name__ == '__main__':
