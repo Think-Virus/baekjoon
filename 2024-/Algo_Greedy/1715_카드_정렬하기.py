@@ -31,6 +31,10 @@ def solve():
     for _ in range(n):
         heapq.heappush(cards, int(sys.stdin.readline()))
 
+    if n == 1:
+        print(0)
+        return
+
     compare_sum = 0
     while len(cards) > 2:
         card1 = heapq.heappop(cards)
