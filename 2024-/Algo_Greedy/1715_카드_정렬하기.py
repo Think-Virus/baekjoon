@@ -22,18 +22,27 @@ N개의 숫자 카드 묶음의 각각의 크기가 주어질 때, 최소한 몇
 40
 """
 import sys
+import heapq
+
 
 def solve():
     n = int(sys.stdin.readline())
-    cards = [int(sys.stdin.readline()) for _ in range(n)]
-    cards.sort()
+    cards = []
+    for _ in range(n):
+        heapq.heappush(cards, int(sys.stdin.readline()))
+
     compare_sum = 0
-    for i, card in enumerate(cards):
-        if i == 0 or i == 1:
-            compare_sum += (n-1) * card
-        else :
-            compare_sum += (n-i) * card
+    while len(cards) > 2:
+        card1 = heapq.heappop(cards)
+        card2 = heapq.heappop(cards)
+
+        prev_sum = card1 + card2
+        heapq.heappush(cards, prev_sum)
+        compare_sum += prev_sum
+
+    compare_sum += sum(cards)
     print(compare_sum)
+
 
 if __name__ == '__main__':
     solve()
