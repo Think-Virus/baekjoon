@@ -30,34 +30,30 @@ def input_data() -> (int, int, int, list[int]):
 
 
 def make_dp(n, s, m, v_list):
-    dp = [[-1] * 2 ** n for _ in range(n + 1)]
-    dp[0][0] = s
-    depth = 0
-    fail_trigger = 0
-    for v in v_list:
-        if fail_trigger == -1 * (2**depth):
-            print(-1)
+    dp = [-1 for _ in range(m + 1)]
+    dp[s] = 0
+
+    v_list.insert(0, 0)
+    for i in range(1, n + 1):
+        v = v_list[i]
+        for p, j in enumerate(dp):
+            if j != i-1:
+                continue
+            p_plus = p + v
+            p_minus = p - v
+            if p_plus <= m:
+                dp[p_plus] = i
+            if p_minus >= 0:
+                dp[p_minus] = i
+
+
+    for i in range(m, -1, -1):
+        if dp[i] == n:
+            print(i)
             return
 
-        depth += 1
-        fail_trigger = 0
-        for i in range(0, 2**depth):
-            prev_volume = dp[depth-1][i//2]
-            if prev_volume == -1 :
-                continue
-            if i % 2 == 1:
-                v = -v
-            cur_volume = prev_volume + v
-            if 0 <= cur_volume <= m:
-                dp[depth][i] = cur_volume
-            else:
-                fail_trigger += -1
+    print(-1)
 
-    final_volume = -1
-    for i in range(2**n):
-        if dp[n][i] <= m:
-            final_volume = max(final_volume, dp[n][i])
-    print(final_volume)
 
 def solve():
     n, s, m, v_list = input_data()
