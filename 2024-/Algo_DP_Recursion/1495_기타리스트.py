@@ -19,6 +19,9 @@ Day Of Mourning의 기타리스트 강토는 다가오는 공연에서 연주할
 
 3 5 10
 5 3 7
+
+4 50 100
+30 10 60 90
 """
 import sys
 
@@ -36,16 +39,18 @@ def make_dp(n, s, m, v_list):
     v_list.insert(0, 0)
     for i in range(1, n + 1):
         v = v_list[i]
+        update_list = []
         for p, j in enumerate(dp):
-            if j != i-1:
+            if j != i - 1:
                 continue
             p_plus = p + v
             p_minus = p - v
             if p_plus <= m:
-                dp[p_plus] = i
+                update_list.append([p_plus, i])
             if p_minus >= 0:
-                dp[p_minus] = i
-
+                update_list.append([p_minus, i])
+        for p, i in update_list:
+            dp[p] = i
 
     for i in range(m, -1, -1):
         if dp[i] == n:
