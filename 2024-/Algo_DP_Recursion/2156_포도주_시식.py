@@ -37,9 +37,9 @@ class OrderType:
         if self.type == 1:
             self.prev_types = [3, 4]
         elif self.type == 2:
-            self.prev_types = [1, 3]
+            self.prev_types = [1, 2, 3]
         elif self.type == 3:
-            self.prev_types = [2, 4]
+            self.prev_types = [2, 3, 4]
         else:
             self.prev_types = [1, 2]
 
