@@ -35,7 +35,7 @@ def input_data() -> (list[tuple[int]], list[int]):
     back_heap = []
     for _ in range(n):
         m, v = map(int, sys.stdin.readline().split())
-        heapq.heappush(jewel_heap, (-v, m))
+        heapq.heappush(jewel_heap, (m, v))
     for _ in range(k):
         heapq.heappush(back_heap, int(sys.stdin.readline()))
 
@@ -45,19 +45,15 @@ def input_data() -> (list[tuple[int]], list[int]):
 def solve():
     jewel_heap, back_heap = input_data()
     total_value = 0
+    tmp = []
 
-    while jewel_heap and back_heap:
-        v, m = heapq.heappop(jewel_heap)
-        passed_back = []
-        while back_heap:
-            back = heapq.heappop(back_heap)
-            if m <= back:
-                total_value -= v
-                break
-            else:
-                heapq.heappush(passed_back, back)
-
-        back_heap = list(heapq.merge(back_heap, passed_back))
+    while back_heap:
+        back = heapq.heappop(back_heap)
+        while jewel_heap and jewel_heap[0][0] <= back:
+            jewel = heapq.heappop(jewel_heap)
+            heapq.heappush(tmp, -jewel[1])
+        if tmp:
+            total_value -= heapq.heappop(tmp)
 
     print(total_value)
 
