@@ -46,10 +46,7 @@ import sys
 class Alphabet:
     def __init__(self, alphabet):
         self.alphabet = alphabet
-        self.places = []
-
-    def add_place(self, place):
-        self.places.append(place)
+        self.count = 0
 
 
 def input_data() -> list[Alphabet]:
@@ -62,12 +59,12 @@ def input_data() -> list[Alphabet]:
             is_in = False
             for alphabet in alphabets:
                 if alphabet.alphabet == word[i]:
-                    alphabet.add_place(place)
+                    alphabet.count += 10 ** place
                     is_in = True
                     break
             if not is_in:
                 new_alphabet = Alphabet(word[i])
-                new_alphabet.add_place(place)
+                new_alphabet.count = 10 ** place
                 alphabets.append(new_alphabet)
             place += 1
 
@@ -79,10 +76,9 @@ def solve():
     result = 0
     max_num = 9
 
-    alphabets.sort(key=lambda x: (-max(x.places), -len(x.places)))
+    alphabets.sort(key=lambda x: -x.count)
     for alphabet in alphabets:
-        for place in alphabet.places:
-            result += max_num * 10 ** place
+        result += alphabet.count * max_num
         max_num -= 1
 
     print(result)
