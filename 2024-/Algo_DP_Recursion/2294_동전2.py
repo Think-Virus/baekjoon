@@ -25,8 +25,9 @@
 5
 12
 
-1 10
-1
+2 1
+10
+20
 """
 import sys
 
@@ -38,6 +39,7 @@ def input_data():
         coin = int(sys.stdin.readline())
         if coin <= k:
             coins.append(coin)
+    coins.sort()
     return n, k, coins
 
 
@@ -46,41 +48,20 @@ def solve():
 
     def make_dp(n, k, coins):
         # Init
-        dp = [[0 for _ in range(n)] for _ in range(k + 1)]
-        for coin in coins:
-            dp[coin] = [1 for _ in range(n)]
+        dp = [10001 for _ in range(k + 1)]
+        dp[0] = 0
 
-        for i in range(k + 1):
-            for j, coin in enumerate(coins):
+        for i in range(1, k + 1):
+            for coin in coins:
                 if i - coin < 0:
-                    continue
+                    break
                 else:
-                    is_prev = False
-                    prev_value = i - coin
-                    prev_min_count = 0
-                    for t in range(n):
-                        if dp[prev_value][t]:
-                            is_prev = True
-                            if prev_min_count:
-                                prev_min_count = min(prev_min_count, dp[prev_value][t])
-                            else:
-                                prev_min_count = dp[prev_value][t]
-                    if is_prev:
-                        dp[i][j] = prev_min_count + 1
+                    dp[i] = min(dp[i], dp[i - coin] + 1)
+
         return dp
 
     dp = make_dp(n, k, coins)
-    min_count = 0
-    for c in dp[k]:
-        if c:
-            if not min_count:
-                min_count = c
-            else:
-                min_count = min(min_count, c)
-    if not min_count:
-        min_count = -1
-
-    print(min_count)
+    print(-1 if dp[k] == 10001 else dp[k])
 
 
 if __name__ == '__main__':
