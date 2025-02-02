@@ -24,13 +24,20 @@
 2
 5
 12
+
+1 10
+1
 """
 import sys
 
 
 def input_data():
     n, k = map(int, sys.stdin.readline().split())
-    coins = [int(sys.stdin.readline()) for _ in range(n)]
+    coins = []
+    for _ in range(n):
+        coin = int(sys.stdin.readline())
+        if coin <= k:
+            coins.append(coin)
     return n, k, coins
 
 
@@ -54,10 +61,10 @@ def solve():
                     for t in range(n):
                         if dp[prev_value][t]:
                             is_prev = True
-                            if not prev_min_count:
-                                prev_min_count = dp[prev_value][t]
-                            else:
+                            if prev_min_count:
                                 prev_min_count = min(prev_min_count, dp[prev_value][t])
+                            else:
+                                prev_min_count = dp[prev_value][t]
                     if is_prev:
                         dp[i][j] = prev_min_count + 1
         return dp
