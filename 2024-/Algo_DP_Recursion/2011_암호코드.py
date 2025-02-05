@@ -17,6 +17,18 @@
 출력
     나올 수 있는 해석의 가짓수를 구하시오. 정답이 매우 클 수 있으므로, 1000000으로 나눈 나머지를 출력한다.
     암호가 잘못되어 암호를 해석할 수 없는 경우에는 0을 출력한다.
+---
+접근법
+    ex) 11
+    Type 1. 뒤에 숫자가 그냥 붙기 1 1
+    Type 2. 이전 숫자와 합쳐지기 11
+    
+    dp[0][i] = dp[0][i - 1] + dp[1][i - 1]
+    dp[1][i] = dp[0][i - 1] if cord[i - 1] * 10 + cord[i] <= 26 else 0
+    ---
+    Type 1에서 0인 경우를 제거하면 00인 경우도 안 생길 것
+    100이 들어올 경우, 암호가 잘못되어 해석할 수 없음
+    -> dp[0][i] dp[1][i] 모두 0이라면 break 후 0 출력
 """
 
 
@@ -26,6 +38,14 @@ def input_data():
         return 0, []
 
     cord = [int(i) for i in input_cord]
+
+    start_idx = len(cord)
+    for i, c in enumerate(cord):
+        if c != 0:
+            start_idx = i
+            break
+
+    cord = cord[start_idx:]
     n = len(cord)
     return n, cord
 
@@ -33,37 +53,21 @@ def input_data():
 def solve():
     n, cord = input_data()
 
-    if n == 1 or n == 0:
+    if n == 0 or n == 1:
         print(n)
         return
-    elif n == 2:
-        if cord[0] * 10 + cord[1] <= 26:
-            print(2)
-            return
-        else:
-            print(1)
-            return
 
     def make_df(n, cord):
-        dp = [0] * n
-        dp[0] = 1
+        dp = [[0 for _ in range(n)] for _ in range(2)]
+        dp[0][0] = 1
 
-        if cord[0] * 10 + cord[1] <= 26:
-            dp[1] = 2
-        else:
-            dp[1] = 1
-
-        for i in range(2, n):
-            if cord[i - 1] * 10 + cord[i] <= 26:
-                dp[i] = dp[i - 1] + 2
-            else:
-                dp[i] = dp[i - 1]
-        # print(dp)
-
+        for i in range(1, n):
+            dp[0][i] = dp[0][i - 1] + dp[1][i - 1] if cord[i] != 0 else 0
+            dp[1][i] = dp[0][i - 1] if 0 < cord[i - 1] * 10 + cord[i] <= 26 else 0
         return dp
 
     dp = make_df(n, cord)
-    print(dp[-1])
+    print((dp[0][-1] + dp[1][-1]) % 1000000)
 
 
 if __name__ == '__main__':
