@@ -34,18 +34,10 @@
 
 def input_data():
     input_cord = input()
-    if input_cord[0] == "-":
+    if input_cord[0] == "-" or input_cord[0] == "0":
         return 0, []
 
     cord = [int(i) for i in input_cord]
-
-    start_idx = len(cord)
-    for i, c in enumerate(cord):
-        if c != 0:
-            start_idx = i
-            break
-
-    cord = cord[start_idx:]
     n = len(cord)
     return n, cord
 
@@ -71,4 +63,5 @@ def solve():
 
 
 if __name__ == '__main__':
-    solve()
+    while True:
+        solve()
