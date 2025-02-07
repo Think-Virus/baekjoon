@@ -38,85 +38,52 @@
             2를 설정하면서 상태 설정
             이 과정에서 같은 값일 경우 이어지는 데 문제가 발생함
             연속해서 같은 값이 있는 경우는 제거하고 가는 게 좋을듯
+---
+정답 접근법
+    LIS (Longest Increasing Subsequence) 배열 생성
+        dp_incr[i]: i 번째 원소까지 고려했을 때 증가하는 가장 긴 부분 수열 길이
+    LDS (Longest Decreasing Subsequence) 배열 생성
+        dp_decr[i]: i 번째 원소부터 시작했을 때 감소하는 가장 긴 부분 수열 길이
+    최댓값 찾기
+        dp_incr[i] + dp_decr[i] - 1 중 최댓값을 찾기
 """
 import sys
-
-TYPE_INCREASING = 0
-TYPE_DECREASING = 1
-TYPE_CURVED = 2
 
 
 def input_data() -> (int, list[int]):
     n = int(sys.stdin.readline())
     seq = list(map(int, sys.stdin.readline().split()))
 
-    # clean sequence : sequentially duplicated number delete
-    n = 0
-    pre_num = 0
-    cleaned_seq = []
-    for num in seq:
-        if num != pre_num:
-            cleaned_seq.append(num)
-            n += 1
-        pre_num = num
-
-    return n, cleaned_seq
+    return n, seq
 
 
 def solve():
     n, seq = input_data()
 
-    def make_dp(n, seq) -> list[list[list[int]]]:
-        dp = [[[0, 0] for _ in range(n)] for _ in range(n)]
-
+    def longest_bitonic_subsequence(n, seq):
+        # 1. LIS 배열 (Increasing Subsequence)
+        dp_incr = [1] * n
         for i in range(n):
-            dp[i][i][0] = 1
+            for j in range(i):
+                if seq[j] < seq[i]:
+                    dp_incr[i] = max(dp_incr[i], dp_incr[j] + 1)
 
-            if i == n - 1:
-                break
+        # 2. LDS 배열 (Decreasing Subsequence)
+        dp_decr = [1] * n
+        for i in range(n - 1, -1, -1):
+            for j in range(i + 1, n):
+                if seq[j] < seq[i]:
+                    dp_decr[i] = max(dp_decr[i], dp_decr[j] + 1)
 
-            if seq[i] > seq[i + 1]:
-                dp[i][i + 1] = [2, TYPE_DECREASING]
-            elif seq[i] < seq[i + 1]:
-                dp[i][i + 1] = [2, TYPE_INCREASING]
+        # 3. 가장 긴 바이토닉 수열 길이 찾기
+        max_length = 0
+        for i in range(n):
+            max_length = max(max_length, dp_incr[i] + dp_decr[i] - 1)
 
-        for k in range(2, n):
-            for i in range(n):
-                j = i + k
-                if j == n:
-                    break
+        return max_length
 
-                max_len = [dp[i][j - 1][0], dp[i][j - 1][1]]
-                for t in range(1, j - i + 1):
-                    cur_len = dp[i + t][j][0]
-                    cur_type = dp[i + t][j][1]
-
-                    if cur_len < max_len[0]:
-                        continue
-
-                    if seq[i] > seq[i + t]:
-                        if cur_type == TYPE_DECREASING:
-                            max_len = [cur_len + 1, TYPE_DECREASING]
-                    elif seq[i] < seq[i + t]:
-                        max_len[0] = cur_len + 1
-                        if cur_type == TYPE_DECREASING:
-                            max_len[1] = TYPE_CURVED
-                        elif cur_type == TYPE_INCREASING:
-                            max_len[1] = TYPE_INCREASING
-                        else:
-                            max_len[1] = TYPE_CURVED
-
-                dp[i][j] = max_len
-
-        return dp
-
-    dp = make_dp(n, seq)
-
-    max_len = 0
-    for i in range(n):
-        if dp[i][n - 1][0] > max_len:
-            max_len = dp[i][n - 1][0]
-    print(max_len)
+    max_length = longest_bitonic_subsequence(n, seq)
+    print(max_length)
 
 
 if __name__ == '__main__':
