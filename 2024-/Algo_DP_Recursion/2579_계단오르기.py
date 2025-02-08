@@ -41,22 +41,25 @@
         1.1) Don't go i-1th
             i : O
             i-1 : X
-            i-2 : O~
-                step[i] + dp[i-2]
+            i-2 : O
+            i-3 : O~
+                step[i] + step[i-2] + dp[i-3]
         1.2) Go i-1th
             i : O
             i-1 : O
             i-2 : X
-            i-3 : O~
-                step[i] + step[i-1] + dp[i-3]
+            i-3 : O
+            i-4 : O~
+                step[i] + step[i-1] + step[i-3] + dp[i-4]
     case 2) Don't go ith
         i : X
-        i - 1 : O~
-            dp[i] = dp[i-1]
+        i - 1 : O
+        i - 2 : O ~
+            dp[i] = step[i] + dp[i-2]
 
     dp[i] =
-        max(step[i] + dp[i-2], step[i] + step[i-1] + dp[i-3], dp[i-1]) if i != n
-        max(step[i] + dp[i-2], step[i] + step[i-1] + dp[i-3]) if i == n
+        max(step[i] + step[i-2] + dp[i-3], step[i] + step[i-1] + step[i-3] + dp[i-4], step[i] + dp[i-2]) if i != n
+        max(step[i] + step[i-2] + dp[i-3], step[i] + step[i-1] + step[i-3] + dp[i-4]) if i == n
 """
 import sys
 
@@ -74,7 +77,6 @@ def solve():
     def sol_dp(n, steps):
         dp = [0] * (n + 1)
         dp[1] = steps[1]
-        dp_third = 0
         if n <= 2:
             print(sum(steps))
             return
@@ -82,16 +84,25 @@ def solve():
         if n == 3:
             print(max(steps[2] + steps[3], steps[1] + steps[3]))
             return
+        if n == 4:
+            print(max(steps[1] + steps[3] + steps[4], steps[1] + steps[2] + steps[4]))
         dp[2] = dp_second
         dp[3] = max(steps[1] + steps[2], steps[2] + steps[3], steps[1] + steps[3])
+        dp[4] = max(steps[1] + steps[3] + steps[4],
+                    steps[1] + steps[2] + steps[4],
+                    steps[2] + steps[4],
+                    steps[2] + steps[3],
+                    steps[1] + steps[3])
 
-        for i in range(4, n + 1):
-            dp[i] = max(steps[i] + dp[i - 2], steps[i] + steps[i - 1] + dp[i - 3], dp[i - 1]) if i != n \
-                else max(steps[i] + dp[i - 2], steps[i] + steps[i - 1] + dp[i - 3])
+        for i in range(5, n + 1):
+            dp[i] = max(steps[i] + steps[i - 2] + dp[i - 3], steps[i] + steps[i - 1] + steps[i - 3] + dp[i - 4], steps[i - 1]) if i != n \
+                else max(steps[i] + steps[i - 2] + dp[i - 3], steps[i] + steps[i - 1] + steps[i - 3] + dp[i - 4])
 
+        print(dp)
         print(dp[n])
 
     sol_dp(n, steps)
+
 
 if __name__ == '__main__':
     solve()
