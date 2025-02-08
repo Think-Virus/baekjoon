@@ -79,10 +79,11 @@ def solve():
             print(sum(steps))
             return
         dp_second = steps[1] + steps[2]
-        if n >= 3:
-            dp_third = max(steps[1] + steps[2], steps[2] + steps[3], steps[1] + steps[3])
+        if n == 3:
+            print(max(steps[2] + steps[3], steps[1] + steps[3]))
+            return
         dp[2] = dp_second
-        dp[3] = dp_third
+        dp[3] = max(steps[1] + steps[2], steps[2] + steps[3], steps[1] + steps[3])
 
         for i in range(4, n + 1):
             dp[i] = max(steps[i] + dp[i - 2], steps[i] + steps[i - 1] + dp[i - 3], dp[i - 1]) if i != n \
