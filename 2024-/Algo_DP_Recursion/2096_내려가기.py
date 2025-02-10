@@ -41,36 +41,28 @@
 import sys
 
 
-def input_data():
-    n = int(sys.stdin.readline())
-    m = [list(map(int, sys.stdin.readline().split())) for _ in range(n)]
-    return n, m
-
-
 def solve():
-    n, m = input_data()
+    n = int(sys.stdin.readline())
+    max_arr = [int(num) for num in sys.stdin.readline().split()]
+    min_arr = max_arr[:]
 
-    def sol_dp(n, m):
-        dp = [[[0, 0], [0, 0], [0, 0]] for _ in range(2)]
-        dp[0] = [[m[0][0], m[0][0]], [m[0][1], m[0][1]], [m[0][2], m[0][2]]]
+    max_temp = max_arr[:]
+    min_temp = max_arr[:]
 
-        for k in range(1, n):
-            i = k % 2
-            for j in range(3):
-                if j == 0:
-                    dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j + 1][0]) + m[k][j]
-                    dp[i][j][1] = min(dp[i - 1][j][1], dp[i - 1][j + 1][1]) + m[k][j]
-                if j == 1:
-                    dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j + 1][0], dp[i - 1][j - 1][0]) + m[k][j]
-                    dp[i][j][1] = min(dp[i - 1][j][1], dp[i - 1][j + 1][1], dp[i - 1][j - 1][1]) + m[k][j]
-                if j == 2:
-                    dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j - 1][0]) + m[k][j]
-                    dp[i][j][1] = min(dp[i - 1][j][1], dp[i - 1][j - 1][1]) + m[k][j]
+    for _ in range(n - 1):
+        b1, b2, b3 = map(int, sys.stdin.readline().split())
+        max_arr[0] = b1 + max(max_temp[0], max_temp[1])
+        max_arr[1] = b2 + max(max_temp[0], max_temp[1], max_temp[2])
+        max_arr[2] = b3 + max(max_temp[1], max_temp[2])
 
-        final = (n - 1) % 2
-        print(f"{max(dp[final][0][0], dp[final][1][0], dp[final][2][0])} {min(dp[final][0][1], dp[final][1][1], dp[final][2][1])}")
+        min_arr[0] = b1 + min(min_temp[0], min_temp[1])
+        min_arr[1] = b2 + min(min_temp[0], min_temp[1], min_temp[2])
+        min_arr[2] = b3 + min(min_temp[1], min_temp[2])
 
-    sol_dp(n, m)
+        max_temp = max_arr[:]
+        min_temp = min_arr[:]
+
+    print(max(max_arr), min(min_arr))
 
 
 if __name__ == '__main__':
