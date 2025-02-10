@@ -46,24 +46,22 @@ def solve():
     n, m = input_data()
 
     def sol_dp(n, m):
-        max_dp = [[0, 0, 0] for _ in range(n)]
-        min_dp = [[0, 0, 0] for _ in range(n)]
-        max_dp[0] = m[0]
-        min_dp[0] = m[0]
+        dp = [[[0, 0], [0, 0], [0, 0]] for _ in range(n)]
+        dp[0] = [[m[0][0], m[0][0]], [m[0][1], m[0][1]], [m[0][2], m[0][2]]]
 
         for i in range(1, n):
             for j in range(3):
                 if j == 0:
-                    max_dp[i][j] = max(max_dp[i - 1][j], max_dp[i - 1][j + 1]) + m[i][j]
-                    min_dp[i][j] = min(min_dp[i - 1][j], min_dp[i - 1][j + 1]) + m[i][j]
+                    dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j + 1][0]) + m[i][j]
+                    dp[i][j][1] = min(dp[i - 1][j][1], dp[i - 1][j + 1][1]) + m[i][j]
                 if j == 1:
-                    max_dp[i][j] = max(max_dp[i - 1][j], max_dp[i - 1][j + 1], max_dp[i - 1][j - 1]) + m[i][j]
-                    min_dp[i][j] = min(min_dp[i - 1][j], min_dp[i - 1][j + 1], min_dp[i - 1][j - 1]) + m[i][j]
+                    dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j + 1][0], dp[i - 1][j - 1][0]) + m[i][j]
+                    dp[i][j][1] = min(dp[i - 1][j][1], dp[i - 1][j + 1][1], dp[i - 1][j - 1][1]) + m[i][j]
                 if j == 2:
-                    max_dp[i][j] = max(max_dp[i - 1][j], max_dp[i - 1][j - 1]) + m[i][j]
-                    min_dp[i][j] = min(min_dp[i - 1][j], min_dp[i - 1][j - 1]) + m[i][j]
+                    dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j - 1][0]) + m[i][j]
+                    dp[i][j][1] = min(dp[i - 1][j][1], dp[i - 1][j - 1][1]) + m[i][j]
 
-        print(f"{max(max_dp[n - 1])} {min(min_dp[n - 1])}")
+        print(f"{max(dp[n - 1][0][0], dp[n - 1][1][0], dp[n - 1][2][0])} {min(dp[n - 1][0][1], dp[n - 1][1][1], dp[n - 1][2][1])}")
 
     sol_dp(n, m)
 
