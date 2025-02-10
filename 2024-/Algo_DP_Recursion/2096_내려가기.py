@@ -18,6 +18,11 @@
 
 출력
     첫째 줄에 얻을 수 있는 최대 점수와 최소 점수를 띄어서 출력한다.
+
+3
+1 2 3
+4 5 6
+4 9 0
 ---
 접근법
     m[i][j] : 주어진 게임에서 [i][j] 좌표의 값
@@ -46,22 +51,26 @@ def solve():
     n, m = input_data()
 
     def sol_dp(n, m):
-        dp = [[[0, 0], [0, 0], [0, 0]] for _ in range(n)]
-        dp[0] = [[m[0][0], m[0][0]], [m[0][1], m[0][1]], [m[0][2], m[0][2]]]
+        max_dp = [[0, 0, 0] for _ in range(2)]
+        min_dp = [[0, 0, 0] for _ in range(2)]
+        max_dp[0] = [t for t in m[0]]
+        min_dp[0] = [t for t in m[0]]
 
-        for i in range(1, n):
+        for k in range(1, n):
+            i = k % 2
             for j in range(3):
                 if j == 0:
-                    dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j + 1][0]) + m[i][j]
-                    dp[i][j][1] = min(dp[i - 1][j][1], dp[i - 1][j + 1][1]) + m[i][j]
+                    max_dp[i][j] = max(max_dp[i - 1][j], max_dp[i - 1][j + 1]) + m[k][j]
+                    min_dp[i][j] = min(min_dp[i - 1][j], min_dp[i - 1][j + 1]) + m[k][j]
                 if j == 1:
-                    dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j + 1][0], dp[i - 1][j - 1][0]) + m[i][j]
-                    dp[i][j][1] = min(dp[i - 1][j][1], dp[i - 1][j + 1][1], dp[i - 1][j - 1][1]) + m[i][j]
+                    max_dp[i][j] = max(max_dp[i - 1][j], max_dp[i - 1][j + 1], max_dp[i - 1][j - 1]) + m[k][j]
+                    min_dp[i][j] = min(min_dp[i - 1][j], min_dp[i - 1][j + 1], min_dp[i - 1][j - 1]) + m[k][j]
                 if j == 2:
-                    dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j - 1][0]) + m[i][j]
-                    dp[i][j][1] = min(dp[i - 1][j][1], dp[i - 1][j - 1][1]) + m[i][j]
+                    max_dp[i][j] = max(max_dp[i - 1][j], max_dp[i - 1][j - 1]) + m[k][j]
+                    min_dp[i][j] = min(min_dp[i - 1][j], min_dp[i - 1][j - 1]) + m[k][j]
 
-        print(f"{max(dp[n - 1][0][0], dp[n - 1][1][0], dp[n - 1][2][0])} {min(dp[n - 1][0][1], dp[n - 1][1][1], dp[n - 1][2][1])}")
+        final = (n - 1) % 2
+        print(f"{max(max_dp[final])} {min(min_dp[final])}")
 
     sol_dp(n, m)
 
