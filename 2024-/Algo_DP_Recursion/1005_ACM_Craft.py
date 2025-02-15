@@ -69,10 +69,14 @@ def solve():
         dp = [x for x in delays]
 
         for sub_paths in right_paths[::-1]:
+            is_goal = False
             for start, end in sub_paths:
                 dp[end] = max(dp[end], dp[start] + delays[end])
-
-        print(dp[goal])
+                if end == goal:
+                    is_goal = True
+            if is_goal:
+                print(dp[goal])
+                break
 
 
 if __name__ == '__main__':
