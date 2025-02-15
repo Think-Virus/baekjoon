@@ -30,54 +30,61 @@
 4
 """
 import sys
+from collections import deque
 
 
 def input_data():
     t = int(sys.stdin.readline())
-    datas = []
+    test_cases = []
+
     for _ in range(t):
         n, k = map(int, sys.stdin.readline().split())
-        delays = [0] + list(map(int, sys.stdin.readline().split()))
-        paths = [list(map(int, sys.stdin.readline().split())) for _ in range(k)]
-        goal = int(sys.stdin.readline())
-        datas.append([n, delays, paths, goal])
+        build_time = [0] + list(map(int, sys.stdin.readline().split()))  # 건물 건설 시간
+        graph = [[] for _ in range(n + 1)]  # 인접 리스트
+        in_degree = [0] * (n + 1)  # 진입 차수
 
-    return datas
+        for _ in range(k):
+            x, y = map(int, sys.stdin.readline().split())
+            graph[x].append(y)  # X → Y (X를 먼저 지어야 Y를 지을 수 있음)
+            in_degree[y] += 1  # Y의 진입 차수 증가
+
+        target = int(sys.stdin.readline())  # 목표 건물
+
+        test_cases.append((n, build_time, graph, in_degree, target))
+
+    return test_cases
 
 
-def find_path(paths, goal) -> list:
-    goals = [goal]
-    right_paths = []
-    while goals:
-        curr_goal = goals.pop(0)
-        curr_right_paths = []
-        for start, end in paths:
-            if end == curr_goal:
-                goals.append(start)
-                curr_right_paths.append([start, end])
-        if curr_right_paths:
-            right_paths.append(curr_right_paths)
+def topology_sort(n, build_time, graph, in_degree, target):
+    dp = [0] * (n + 1)  # 해당 건물까지 걸리는 최소 시간
+    queue = deque()
 
-    return right_paths
+    # 진입 차수가 0인 노드(즉, 먼저 지을 수 있는 건물)부터 시작
+    for i in range(1, n + 1):
+        if in_degree[i] == 0:
+            queue.append(i)
+            dp[i] = build_time[i]  # 초기 건설 시간 설정
+
+    while queue:
+        current = queue.popleft()
+
+        for next_building in graph[current]:
+            in_degree[next_building] -= 1  # 진입 차수 감소
+            # DP 갱신: 현재 건물을 짓는 데 걸린 시간을 반영
+            dp[next_building] = max(dp[next_building], dp[current] + build_time[next_building])
+
+            if in_degree[next_building] == 0:  # 다음 건물을 지을 수 있는 경우 큐에 추가
+                queue.append(next_building)
+
+    return dp[target]
 
 
 def solve():
-    datas = input_data()
+    test_cases = input_data()
 
-    for n, delays, paths, goal in datas:
-        right_paths = find_path(paths, goal)
-        dp = [x for x in delays]
-
-        for sub_paths in right_paths[::-1]:
-            is_goal = False
-            for start, end in sub_paths:
-                dp[end] = max(dp[end], dp[start] + delays[end])
-                if end == goal:
-                    is_goal = True
-            if is_goal:
-                print(dp[goal])
-                break
+    for n, build_time, graph, in_degree, target in test_cases:
+        print(topology_sort(n, build_time, graph, in_degree, target))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     solve()
