@@ -81,8 +81,8 @@ def solve():
     dfs_edges = copy.deepcopy(edges)
     bfs_edges = copy.deepcopy(edges)
 
-    print(dfs(n, v, dfs_edges))
-    print(bfs(n, v, bfs_edges))
+    print(*dfs(n, v, dfs_edges))
+    print(*bfs(n, v, bfs_edges))
 
 
 if __name__ == '__main__':
