@@ -37,7 +37,7 @@ def input_data():
     return n, edges
 
 
-def build_graph(n):
+def build_graph(n) -> list[list[int]]:
     edges = [[] for _ in range(n)]
     for i in range(n):
         edges[i] = list(map(int, sys.stdin.readline().split()))
@@ -46,42 +46,48 @@ def build_graph(n):
 
 def solve():
     n, edges = input_data()
+    INF = int(1e9)
     dp = [[-1 for _ in range(1 << n)] for _ in range(n)]
 
-    def _dfs(x, visited):
-        if visited == (1 << n) - 1:  # 마지막 마을까지 도착한 것
-            # 처음으로 돌아가는 비용만 확인하면 됨
-            if edges[x][0]:  # 돌아갈 수 있는 경우
-                return edges[x][0]
-            else:  # 돌아갈 수 없는 경우
-                return -1
+    # 마지막 DFS의 끝나는 지점 판별을 위한 if문 제거를 위해 미리 최종 경로 값 저장
+    # 0번 노드를 마지막으로 방문해야 하므로 111..0 상태가 가장 마지막 상태 -> (1<<n)-2가 됨
+    for i in range(1, n):
+        if edges[i][0]:
+            dp[i][(1 << n) - 2] = edges[i][0]
+        else:
+            dp[i][(1 << n) - 2] = INF
 
-        if dp[x][visited] != -1:  # 이미 계산이 된 경우
+    def _dfs(x, visited):
+        # 방문한 노드인 경우 DP값을 return
+        if dp[x][visited] != -1:
             return dp[x][visited]
 
-        for i in range(1, n):  # 0번째 도시부터 시작했으므로, 1번째 도시부터 모든 도시 탐방
-            if not edges[x][i]:  # x번째 도시에서 i번째 도시로 가는 길이 없는 경우, skip
+        for j in range(1, n):  # 0번째 도시부터 시작했으므로, 1번째 도시부터 모든 도시 탐방
+            if not edges[x][j]:  # x번째 도시에서 i번째 도시로 가는 길이 없는 경우, skip
                 continue
-            if visited & (1 << i):  # 이미 방문한 도시라면, skip
+            if visited & (1 << j):  # 이미 방문한 도시라면, skip
                 """
                 ex)
                     visited : 111 => 0번 도시부터 1,2번째 도시까지 방문하고 1번째 도시로 돌아가는 비용 계산됨
-                    - i : 1 -> 1 << 1 = 10 -> 이미 1번째 도시는 방문했었으므로 다시 볼 필요 없음
-                    - i : 3 -> 1 << 3 = 1000 -> 3번째 도시는 방문한 적이 없으므로 계산 필요
+                    - j : 1 -> 1 << 1 = 10 -> 이미 1번째 도시는 방문했었으므로 다시 볼 필요 없음
+                    - j : 3 -> 1 << 3 = 1000 -> 3번째 도시는 방문한 적이 없으므로 계산 필요
                 """
                 continue
 
-            _dfs_cost = _dfs(i, visited | (1 << i))
-
-            if _dfs_cost == -1:  # 길이 끊어져있는 경우
-                continue
+            if dp[x][visited] == -1:  # 처음 방문한 경우
+                dp[x][visited] = _dfs(j, visited | (1 << j)) + edges[x][j]
             else:
-                _dfs_cost += edges[x][i]
-                dp[x][visited] = min(dp[x][visited], _dfs_cost) if dp[x][visited] != -1 else _dfs_cost
+                dp[x][visited] = min(dp[x][visited], _dfs(j, visited | (1 << j)) + edges[x][j])
+
+        # 모든 반복문을 수행한 후에 dp의 값이 -1인 경우
+        # 이 경우는 지금 상태 (now) 에서 1111..1(최종경로)로 가는 경우가 없다는 것을 의미한다.
+        # 그러므로 -1이 아닌 INF를 저장해 줌으로써 방문했지만 경로가 없다는 것을 나타내준다.
+        if dp[x][visited] == -1:
+            return INF
 
         return dp[x][visited]
 
-    print(_dfs(0, 1))
+    print(_dfs(0, 0))
 
 
 if __name__ == '__main__':
