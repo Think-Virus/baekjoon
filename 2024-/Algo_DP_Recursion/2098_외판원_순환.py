@@ -23,4 +23,66 @@
 8 8 9 0
 ---
     1시간 10분간 고민해봤지만 각이 안 나옴
+---
+    이전에 해답 봤음
+    DFS 이해가 부족하여 복습하고 다시 시도
 """
+import sys
+
+
+def input_data():
+    n = int(sys.stdin.readline())
+    edges = build_graph(n)
+
+    return n, edges
+
+
+def build_graph(n):
+    edges = [[] for _ in range(n)]
+    for i in range(n):
+        edges[i] = list(map(int, sys.stdin.readline().split()))
+    return edges
+
+
+def solve():
+    n, edges = input_data()
+    dp = [[-1 for _ in range(1 << n)] for _ in range(n)]
+
+    def _dfs(x, visited):
+        if visited == (1 << n) - 1:  # 마지막 마을까지 도착한 것
+            # 처음으로 돌아가는 비용만 확인하면 됨
+            if edges[x][0]:  # 돌아갈 수 있는 경우
+                return edges[x][0]
+            else:  # 돌아갈 수 없는 경우
+                return -1
+
+        if dp[x][visited] != -1:  # 이미 계산이 된 경우
+            return dp[x][visited]
+
+        for i in range(1, n):  # 0번째 도시부터 시작했으므로, 1번째 도시부터 모든 도시 탐방
+            if not edges[x][i]:  # x번째 도시에서 i번째 도시로 가는 길이 없는 경우, skip
+                continue
+            if visited & (1 << i):  # 이미 방문한 도시라면, skip
+                """
+                ex)
+                    visited : 111 => 0번 도시부터 1,2번째 도시까지 방문하고 1번째 도시로 돌아가는 비용 계산됨
+                    - i : 1 -> 1 << 1 = 10 -> 이미 1번째 도시는 방문했었으므로 다시 볼 필요 없음
+                    - i : 3 -> 1 << 3 = 1000 -> 3번째 도시는 방문한 적이 없으므로 계산 필요
+                """
+                continue
+
+            _dfs_cost = _dfs(i, visited | (1 << i))
+
+            if _dfs_cost == -1:  # 길이 끊어져있는 경우
+                continue
+            else:
+                _dfs_cost += edges[x][i]
+                dp[x][visited] = min(dp[x][visited], _dfs_cost) if dp[x][visited] != -1 else _dfs_cost
+
+        return dp[x][visited]
+
+    print(_dfs(0, 1))
+
+
+if __name__ == '__main__':
+    solve()
