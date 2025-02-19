@@ -75,9 +75,13 @@ def solve():
                 continue
 
             if dp[x][visited] == -1:  # 처음 방문한 경우
+                # print(f"dp[{x}][{bin(visited)}] = _dfs({j}, {bin(visited | (1 << j))} + edges[{x}][{j}])")
                 dp[x][visited] = _dfs(j, visited | (1 << j)) + edges[x][j]
             else:
+                # print(f"dp[{x}][{bin(visited)}] = min(dp[{x}][{bin(visited)}], _dfs({j}, {bin(visited | (1 << j))} + edges[{x}][{j}])")
                 dp[x][visited] = min(dp[x][visited], _dfs(j, visited | (1 << j)) + edges[x][j])
+            # for k in range(n):
+            #     print(dp[k])
 
         # 모든 반복문을 수행한 후에 dp의 값이 -1인 경우
         # 이 경우는 지금 상태 (now) 에서 1111..1(최종경로)로 가는 경우가 없다는 것을 의미한다.
