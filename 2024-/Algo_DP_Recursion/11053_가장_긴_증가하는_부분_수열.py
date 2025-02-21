@@ -21,23 +21,20 @@ import sys
 
 
 def input_data():
-    n = int(sys.stdin.readline())
+    n = int(sys.stdin.readline().strip())
     numbers = list(map(int, sys.stdin.readline().split()))
     return n, numbers
 
 
 def solve(n, numbers):
-    df = [0] * n
-    df[0] = 1
-    min_num = numbers[0]
-    for i in range(1, n):
-        if numbers[i] > numbers[i - 1]:
-            df[i] = df[i - 1] + 1
-        else:
-            df[i] = df[i - 1]
-        min_num = min(min_num, numbers[i])
+    dp = [1] * n  # 모든 원소를 최소 1의 길이로 초기화
 
-    print(df[n - 1])
+    for i in range(1, n):
+        for j in range(i):
+            if numbers[j] < numbers[i]:  # 증가하는 경우
+                dp[i] = max(dp[i], dp[j] + 1)  # 최댓값 갱신
+
+    print(max(dp))  # 가장 긴 증가하는 부분 수열의 길이 출력
 
 
 if __name__ == '__main__':
