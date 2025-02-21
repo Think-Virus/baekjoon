@@ -26,21 +26,13 @@ def input_data():
 
 
 def solve(n, numbers):
-    dp = [[0 for _ in range(n)] for _ in range(n)]
+    dp = [0] * n
+    dp[0] = numbers[0]
 
-    for i in range(n):
-        dp[i][i] = numbers[i]
+    for i in range(1, n):
+        dp[i] = max(dp[i - 1] + numbers[i], numbers[i])
 
-    for i in range(n - 2, -1, -1):
-        for j in range(1, n - i):
-            k = i + j
-            dp[i][k] = max(dp[i][k - 1], dp[i][i] + dp[i + 1][k])
-
-    max_sum = dp[-1][-1]
-    for i in range(n):
-        max_sum = max(max_sum, dp[i][-1])
-
-    print(max_sum)
+    print(max(dp))
 
 
 if __name__ == '__main__':
