@@ -30,6 +30,8 @@ def solve(n, numbers):
     dp[0] = numbers[0]
 
     for i in range(1, n):
+        # dp[i] : i번째 수까지 최대 합
+        # 만약 dp[i-1] + numbers[i]가 새로 추가하는 numbers[i]보다 작으면 이전 것들을 다 버리고 새로 합을 시작하는 게 맞음
         dp[i] = max(dp[i - 1] + numbers[i], numbers[i])
 
     print(max(dp))
