@@ -43,16 +43,20 @@ def input_data():
 
 
 def solve(n, nums, test_cases):
+    dp = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
+
     for x1, y1, x2, y2 in test_cases:
-        dp = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
         if x1 == x2 and y1 == y2:
-            print(nums[y1][x1])
+            print(nums[x1][y1])
             continue
         else:
-            for y in range(y1, y2 + 1):
-                for x in range(x1, x2 + 1):
-                    dp[y][x] = dp[y - 1][x] + dp[y][x - 1] - dp[y - 1][x - 1] + nums[y][x]
-            print(dp[y2][x2])
+            dp[x1 - 1] = [0] * (n + 1)
+            for x in range(x1, x2 + 1):
+                for y in range(y1, y2 + 1):
+                    if y == y1:
+                        dp[x][y - 1] = 0
+                    dp[x][y] = dp[x - 1][y] + dp[x][y - 1] - dp[x - 1][y - 1] + nums[x][y]
+            print(dp[x2][y2])
 
 
 if __name__ == '__main__':
