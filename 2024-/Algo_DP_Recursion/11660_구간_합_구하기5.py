@@ -42,21 +42,24 @@ def input_data():
     return n, nums, test_cases
 
 
-def solve(n, nums, test_cases):
+def get_dp(n, nums):
     dp = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
+    for x in range(1, n + 1):
+        for y in range(1, n + 1):
+            dp[x][y] = dp[x - 1][y] + dp[x][y - 1] - dp[x - 1][y - 1] + nums[x][y]
+    return dp
+
+
+def solve(n, nums, test_cases):
+    dp = get_dp(n, nums)
 
     for x1, y1, x2, y2 in test_cases:
         if x1 == x2 and y1 == y2:
             print(nums[x1][y1])
             continue
         else:
-            dp[x1 - 1] = [0] * (n + 1)
-            for x in range(x1, x2 + 1):
-                for y in range(y1, y2 + 1):
-                    if y == y1:
-                        dp[x][y - 1] = 0
-                    dp[x][y] = dp[x - 1][y] + dp[x][y - 1] - dp[x - 1][y - 1] + nums[x][y]
-            print(dp[x2][y2])
+            total = dp[x2][y2] - dp[x1 - 1][y2] - dp[x2][y1 - 1] + dp[x1 - 1][y1 - 1]
+            print(total)
 
 
 if __name__ == '__main__':
