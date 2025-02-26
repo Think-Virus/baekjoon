@@ -7,6 +7,9 @@
 
 출력
     첫째 줄에 경우의 수를 출력한다.
+---
+잘못 생각한 부분 이해 완료
+https://jyeonnyang2.tistory.com/51
 """
 
 
@@ -16,7 +19,11 @@ def solve():
     dp[2] = 3
     dp[4] = 11
     for curr in range(6, n + 1, 2):
-        dp[curr] = 2 * dp[curr - 2] * dp[2] + 2 + 2 * 2 * int((n - 6) / 2)
+        total = 0
+        total += dp[curr - 2] * dp[2]
+        for l in range(4, curr + 1, 2):
+            total += dp[curr - l] * 2
+        dp[curr] = total + 2
     print(dp[n])
 
 
