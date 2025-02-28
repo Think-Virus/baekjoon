@@ -17,7 +17,7 @@ import sys
 
 
 def input_data():
-    n, m = map(int, sys.stdin.readline().split())
+    m, n = map(int, sys.stdin.readline().split())
     arrays = [[0] * (n + 1)] + [[0] + list(map(int, list(sys.stdin.readline().rstrip()))) for _ in range(m)]
 
     return n, m, arrays
