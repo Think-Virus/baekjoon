@@ -20,7 +20,7 @@
 6 3 16 8
 """
 import sys
-
+sys.setrecursionlimit(100000)
 
 def input_data():
     n = int(sys.stdin.readline())
