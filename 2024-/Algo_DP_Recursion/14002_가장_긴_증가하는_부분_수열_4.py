@@ -26,53 +26,24 @@ def input_data():
 
 
 def solve(n, nums):
-    dp = [[0] * n for _ in range(n)]
-    dp_nums_dict = {}
+    dp = [1] * n
 
-    for i in range(n):
-        dp[i][i] = 1
-        dp_nums_dict[i] = [nums[i]]
+    for i in range(1, n):
+        for j in range(i):
+            if nums[j] < nums[i]:
+                dp[i] = max(dp[i], dp[j] + 1)
 
-    """
-    1 2     1 3
-    2 3     2 4
-    3 4     3 5
-    """
-    for _j in range(1, n):
-        for i in range(n):
-            j = i + _j
-            if j > n - 1:
-                continue
+    print(max(dp))
 
-            if nums[i] < nums[j]:
-                max_len = 0
-                max_len_idx = 0
-                for k in range(_j):
-                    next_idx = i + 1 + k
-                    if next_idx > n - 1:
-                        break
-                    if nums[i] < nums[next_idx]:
-                        if max_len < dp[next_idx][j]:
-                            max_len = dp[next_idx][j]
-                            max_len_idx = next_idx
-                if not max_len:
-                    dp[i][j] += 1
-                    dp_nums_dict[i].append(nums[j])
-                else:
-                    dp[i][j] = max_len + 1
-                    dp_nums_dict[i] = [nums[i]] + dp_nums_dict[max_len_idx]
-            else:
-                dp[i][j] = dp[i][j - 1]
+    sequence = []
+    order = max(dp)
+    for i in range(n - 1, -1, -1):
+        if order == dp[i]:
+            sequence.append(nums[i])
+            order -= 1
 
-    max_len = 0
-    max_len_idx = 0
-    for i in range(n):
-        if max_len < dp[i][n - 1]:
-            max_len = dp[i][n - 1]
-            max_len_idx = i
-
-    print(max_len)
-    print(*dp_nums_dict[max_len_idx])
+    sequence.reverse()
+    print(*sequence)
 
 
 if __name__ == '__main__':
