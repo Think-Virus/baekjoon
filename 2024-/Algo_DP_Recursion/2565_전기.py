@@ -29,57 +29,23 @@ import sys
 
 def input_data():
     n = int(sys.stdin.readline())
-    lines_input = []
-    lines_all = [[0] * 500 for _ in range(500)]
-    for _ in range(n):
-        s, e = map(int, sys.stdin.readline().split())
-        lines_all[s - 1][e - 1] = 1
-        lines_input.append([s - 1, e - 1])
+    lines = [list(map(int, sys.stdin.readline().split())) for _ in range(n)]
 
-    return lines_input, lines_all
+    return n, lines
 
 
-def solve(lines_input, lines_all):
-    dp = [[0] * 500 for _ in range(500)]
-    dp_len = {}
-    for i in range(500):
-        dp_len[i] = 0
+def solve(n, lines):
+    dp = [1] * n
+    lines.sort()
 
-    for s, e in lines_input:
-        for ss in range(s):
-            for ee in range(e, 500):
-                if lines_all[ss][ee] == 1:
-                    dp[s][ss] = 1
-                    dp[ss][s] = 1
-                    dp_len[s] += 1
-                    dp_len[ss] += 1
+    for i in range(1, n):
+        for j in range(i):
+            if lines[j][1] < lines[i][1]:
+                dp[i] = max(dp[i], dp[j] + 1)
 
-    sorted(dp_len.items(), key=lambda x: x[1], reverse=True)
-    dp_len_keys_list = list(dp_len.keys())
-
-    deleted_line_cnt = 0
-    while dp_len[dp_len_keys_list[0]] != 0:
-        i = dp_len_keys_list.pop(0)
-        l = dp_len[i]
-
-        deleted_line_cnt += 1
-
-        for j in range(500):
-            if dp[i][j] == 1:
-                try:
-                    dp_len[j] -= 1
-                except:
-                    continue
-                l -= 1
-            if l == 0:
-                break
-        del dp_len[i]
-        sorted(dp_len.items(), key=lambda x: x[1], reverse=True)
-        dp_len_keys_list = list(dp_len.keys())
-
-    print(deleted_line_cnt)
+    print(n-max(dp))
 
 
 if __name__ == '__main__':
-    lines_input, lines_all = input_data()
-    solve(lines_input, lines_all)
+    n, lines = input_data()
+    solve(n, lines)
