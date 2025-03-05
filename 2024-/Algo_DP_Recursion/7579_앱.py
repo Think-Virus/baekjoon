@@ -29,24 +29,37 @@
     필요한 메모리 M 바이트를 확보하기 위한 앱 비활성화의 최소의 비용을 계산하여 한 줄에 출력해야 한다.
 ---
 접근 방법 자체가 틀리진 않았지만, 부족했음
+---
+정답 참조
+https://wooono.tistory.com/603
 """
 import sys
 
 
 def input_data():
     n, goal_reduce_memory = map(int, sys.stdin.readline().split())
-    memories = list(map(int, sys.stdin.readline().split()))
-    costs = list(map(int, sys.stdin.readline().split()))
+    memories = [0] + list(map(int, sys.stdin.readline().split()))
+    costs = [0] + list(map(int, sys.stdin.readline().split()))
 
     return n, goal_reduce_memory, memories, costs
 
 
 def solve(n, goal_reduce_memory, memories, costs):
-    dp_memory: list[list[int]] = [[] for _ in range(goal_reduce_memory + 1)]
-    for i, memory in enumerate(memories):
-        dp_memory[memory].append(i)
+    dp = [[0] * (sum(costs) + 1) for i in range(n + 1)]
+    result = sum(costs)
 
-    print(dp_memory)
+    for i in range(1, n + 1):
+        curr_memory = memories[i]
+        curr_cost = costs[i]
+        for j in range(sum(costs) + 1):
+            if j < curr_cost:
+                dp[i][j] = dp[i - 1][j]
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - curr_cost] + curr_memory)
+                if dp[i][j] >= goal_reduce_memory:
+                    result = min(result, j)
+
+    print(result)
 
 
 if __name__ == '__main__':
