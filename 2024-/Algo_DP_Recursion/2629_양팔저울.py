@@ -33,33 +33,44 @@ import sys
 
 def input_data():
     n = int(sys.stdin.readline())
-    weights = [0] + list(map(int, sys.stdin.readline().split()))
+    weights = list(map(int, sys.stdin.readline().split()))
     test_case_n = int(sys.stdin.readline())
     test_cases = list(map(int, sys.stdin.readline().split()))
 
-    return n, weights, test_case_n, test_cases
+    return n, weights, test_cases
 
 
-def get_idx(j, max_weight):
-    return j + max_weight
-
-
-def solve(n, weights, test_case_n, test_cases):
+def solve(n, weights, test_cases):
     max_weight = sum(weights)
-    dp = [[0] * (max_weight * 2 + 1) for _ in range(n + 1)]
+    dp = [[0] * (max_weight + 1) for _ in range(n + 1)]
 
-    for _j in weights:
-        dp[]
+    def is_enable(used_cnt, weight):
+        if used_cnt > n:
+            return
+        if dp[used_cnt][weight]:
+            return
 
-    for i in range(1, n + 1):
-        for _j in range(-max_weight, max_weight + 1):
-            j = get_idx(_j, max_weight)
+        dp[used_cnt][weight] = 1
 
-            if _j < weights[i]:
-                if _j < -weights[i]:
-                    dp[i][j] = dp[i - 1][j]
+        # Don't use more weight
+        is_enable(used_cnt + 1, weight)
+        # Put next weight on left side
+        is_enable(used_cnt + 1, weight + weights[used_cnt - 1])
+        # Put next weight on right side
+        is_enable(used_cnt + 1, abs(weight - weights[used_cnt - 1]))
+
+    is_enable(0, 0)
+
+    for goal_weight in test_cases:
+        if goal_weight > max_weight:
+            print('N', end=' ')
+        else:
+            if dp[n][goal_weight]:
+                print('Y', end=' ')
+            else:
+                print('N', end=' ')
 
 
 if __name__ == "__main__":
-    n, weights, test_case_n, test_cases = input_data()
-    solve(n, weights, test_case_n, test_cases)
+    n, weights, test_cases = input_data()
+    solve(n, weights, test_cases)
