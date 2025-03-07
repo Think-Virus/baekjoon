@@ -33,11 +33,10 @@
 1 3
 10
 ---
-접근법
-    dp[i][j] = dp[i-1][j] + dp[i][j-coins[i]]
+1시간 혼자 도전해봄
+https://d-cron.tistory.com/23
 """
 import sys
-sys.setrecursionlimit(10**6)
 
 
 def input_data():
@@ -45,7 +44,7 @@ def input_data():
     test_cases = []
     for _ in range(t):
         n = int(sys.stdin.readline())
-        coins = list(map(int, sys.stdin.readline().split()))
+        coins = [0] + list(map(int, sys.stdin.readline().split()))
         goal = int(sys.stdin.readline())
         test_cases.append([n, coins, goal])
 
@@ -54,25 +53,20 @@ def input_data():
 
 def solve(test_cases):
     for n, coins, goal in test_cases:
-        dp = [[0] * (goal + 1) for _ in range(n)]
+        dp = [[0] * (goal + 1) for _ in range(n + 1)]
 
-        def is_able_value(i, j):
-            if i < 0 or j < 0:
-                return 0
+        for i in range(n + 1):
+            dp[i][0] = 1
 
-            if j == coins[i]:
-                return 1
+        for i in range(1, n + 1):
+            for j in range(goal + 1):
+                curr_coin = coins[i]
+                if j - curr_coin >= 0:
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - curr_coin]
+                else:
+                    dp[i][j] = dp[i - 1][j]
 
-            if dp[i][j]:
-                return dp[i][j]
-
-            dp[i][j] = is_able_value(i - 1, j) + is_able_value(i, j - coins[i])
-
-            return dp[i][j]
-
-        print(is_able_value(n - 1, goal))
-        for i in range(n):
-            print(dp[i])
+        print(dp[-1][-1])
 
 
 if __name__ == '__main__':
