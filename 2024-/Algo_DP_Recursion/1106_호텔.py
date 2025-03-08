@@ -21,39 +21,27 @@ import sys
 
 def input_data():
     c, n = map(int, sys.stdin.readline().split())
-    hotels = [[0, 0]]
+    hotels = []
 
     for _ in range(n):
         cost, customer = map(int, sys.stdin.readline().split())
         hotels.append([cost, customer])
 
-    hotels.sort(key=lambda x: x[1])
-
-    return c, n, hotels
+    return c, hotels
 
 
-def solve(c, n, hotels):
+def solve(c, hotels):
     INF = sys.maxsize
-    result = -1
-    dp = [[INF] * 1001 for _ in range(n + 1)]
+    dp = [INF] * (c + 100)
+    dp[0] = 0
 
-    for i in range(1, n + 1):
-        dp[i][0] = 0
-        for j in range(1, 1001):
-            if j - hotels[i][1] >= 0:
-                dp[i][j] = min(dp[i - 1][j], dp[i][j - hotels[i][1]] + hotels[i][0])
-            else:
-                dp[i][j] = dp[i - 1][j]
+    for cost, customer in hotels:
+        for i in range(customer, c + 100):
+            dp[i] = min(dp[i], dp[i - customer] + cost)
 
-            # if i == n and j >= c:
-            #     if dp[i][j] != INF:
-            #         result = dp[i][j]
-            #         break
-    result = min(dp[n][c:])
-
-    print(result)
+    print(min(dp[c:]))
 
 
 if __name__ == '__main__':
-    c, n, hotels = input_data()
-    solve(c, n, hotels)
+    c, hotels = input_data()
+    solve(c, hotels)
