@@ -29,7 +29,7 @@
 0 0.00
 
 Python3 -> 시간 초과
-PyPy3 -> 틀림
+PyPy3 -> 틀림 -> 부동 소수점 처리가 문제일 것으로 추측됨
 """
 import sys
 
@@ -40,13 +40,13 @@ def input_data():
 
     while price_limit != 0.00:
         candy_infos = []
-        for _ in range(int(n)):
+        for _ in range(round(n)):
             calorie, price = map(float, sys.stdin.readline().split())
-            calorie = int(calorie)
-            price = int(price * 100)
+            calorie = round(calorie)
+            price = round(price * 100)
             candy_infos.append((calorie, price))
 
-        test_cases.append([int(n), int(price_limit * 100), candy_infos])
+        test_cases.append([round(n), round(price_limit * 100), candy_infos])
         n, price_limit = map(float, sys.stdin.readline().split())
 
     return test_cases
