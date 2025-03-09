@@ -15,26 +15,41 @@
 
 출력
     첫째 줄에 준석이가 얻을 수 있는 최대 점수를 출력한다.
+---
+3 310
+50 40
+100 70
+200 150
+
+3 310
+100 70
+200 150
+50 40
 """
 import sys
 
 
 def input_data():
     n, limit_time = map(int, sys.stdin.readline().split())
-    expectation = [list(map(int, sys.stdin.readline().split())) for _ in range(n)]
+    expectation = [[0, 0]] + [list(map(int, sys.stdin.readline().split())) for _ in range(n)]
 
-    return limit_time, expectation
+    expectation.sort()
+
+    return n, limit_time, expectation
 
 
-def solve(limit_time, expectation):
-    dp = [0] * (limit_time + 1)
-    for spent_time, score in expectation:
-        for i in range(spent_time, limit_time + 1):
-            dp[i] = max(dp[i], dp[i - spent_time] + score)
+def solve(n, limit_time, expectation):
+    dp = [[0] * (limit_time + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(limit_time + 1):
+            if j >= expectation[i][0]:
+                dp[i][j] = max(dp[i-1][j], dp[i - 1][j - expectation[i][0]] + expectation[i][1])
+            else:
+                dp[i][j] = dp[i - 1][j]
 
-    print(max(dp))
+    print(max(dp[n]))
 
 
 if __name__ == "__main__":
-    limit_time, expectation = input_data()
-    solve(limit_time, expectation)
+    n, limit_time, expectation = input_data()
+    solve(n, limit_time, expectation)
