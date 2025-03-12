@@ -1,3 +1,8 @@
+"""
+Python3 -> 시간초과
+PyPy3 -> 정답
+"""
+
 import sys
 from collections import deque
 
@@ -35,23 +40,15 @@ def solve():
                     queue.append(friend)
             groups.append(curr_group)
 
-    groups_size = len(groups)
-    dp = [[0] * k for _ in range(groups_size + 1)]
-
-    for _i, group in enumerate(groups):
-        i = _i + 1
-        group_size = group[0]
-        group_candy = group[1]
-
+    dp = [0] * k
+    for group_size, group_candy in groups:
         if group_size >= k:
             continue
 
-        for j in range(group_size):
-            dp[i][j] = dp[i - 1][j]
-        for j in range(group_size, k):
-            dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - group_size] + group_candy)
+        for j in range(k - 1, group_size - 1, -1):
+            dp[j] = max(dp[j], dp[j - group_size] + group_candy)
 
-    print(dp[groups_size][k - 1])
+    print(dp[k - 1])
 
 
 if __name__ == "__main__":
