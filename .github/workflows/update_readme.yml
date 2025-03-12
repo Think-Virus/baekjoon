@@ -1,0 +1,30 @@
+name: Update README
+
+on:
+  push:
+    branches:
+      - main  # main 브랜치에 push될 때 실행
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Python 설정
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: 문제 수 업데이트 스크립트 실행
+        run: python update_readme.py
+
+      - name: 변경 사항 커밋 및 푸시
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "자동 업데이트: README 문제 수 갱신" || echo "No changes to commit"
+          git push
