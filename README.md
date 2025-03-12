@@ -29,8 +29,8 @@ Each folder is categorized by **algorithm type** and organized by **year**.
 ---
 
 ## 🚀 **Progress**  
-- **Total Problems Solved**: `N problems` (including both `2022` & `2024`)  
-- **Latest Submission**: `YYYY-MM-DD`  
+- **Total Problems Solved**: `67 problems`
+- **Latest Submission**: `2025-03-12`
 - **Programming Language**: Python  
 
 ---
