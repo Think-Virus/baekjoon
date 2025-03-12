@@ -1,61 +1,47 @@
 import sys
-
-
-class FriendCandyGraph:
-    def __init__(self, root, candy):
-        self.root = root
-        self.friends = []
-        self.size = 1
-        self.candies = candy
-
-    def add(self, friend, candy):
-        self.friends.append(friend)
-        self.size += 1
-        self.candies += candy
-
-    def is_included(self, friend):
-        return friend in self.friends
+from collections import deque
 
 
 def solve():
     n, m, k = map(int, sys.stdin.readline().split())
     candies = [0] + list(map(int, sys.stdin.readline().split()))
-    graphs: list[FriendCandyGraph] = []
+    friends_connection = {i: [] for i in range(1, n + 1)}
+
     for _ in range(m):
         friend1, friend2 = map(int, sys.stdin.readline().split())
+        friends_connection[friend1].append(friend2)
+        friends_connection[friend2].append(friend1)
 
-        is_new_group = True
-        for graph in graphs:
-            if graph.root == friend1:
-                graph.add(friend2, candies[friend2])
-                is_new_group = False
-                break
-            if graph.root == friend2:
-                graph.add(friend1, candies[friend1])
-                is_new_group = False
-                break
-            if graph.is_included(friend1):
-                graph.add(friend2, candies[friend2])
-                is_new_group = False
-                break
-            if graph.is_included(friend2):
-                graph.add(friend1, candies[friend1])
-                is_new_group = False
-                break
+    # BFS
+    queue = deque()
+    visited = [False] * (n + 1)
+    groups = []
 
-        if is_new_group:
-            new_group = FriendCandyGraph(friend1, candies[friend1])
-            new_group.add(friend2, candies[friend2])
-            graphs.append(new_group)
+    for i in range(1, n + 1):
+        curr_group = [0, 0]
+        if visited[i]:
+            continue
+        else:
+            queue.append(i)
+            visited[i] = True
+            while queue:
+                curr_friend = queue.popleft()
+                curr_group[0] += 1
+                curr_group[1] += candies[curr_friend]
+                for friend in friends_connection[curr_friend]:
+                    if visited[friend]:
+                        continue
+                    visited[friend] = True
+                    queue.append(friend)
+            groups.append(curr_group)
 
-    graph_size = len(graphs)
+    groups_size = len(groups)
+    dp = [[0] * k for _ in range(groups_size + 1)]
 
-    dp = [[0] * k for _ in range(graph_size + 1)]
-
-    for _i, graph in enumerate(graphs):
+    for _i, group in enumerate(groups):
         i = _i + 1
-        group_size = graph.size
-        group_candy = graph.candies
+        group_size = group[0]
+        group_candy = group[1]
 
         if group_size >= k:
             continue
@@ -65,7 +51,7 @@ def solve():
         for j in range(group_size, k):
             dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - group_size] + group_candy)
 
-    print(dp[graph_size][k - 1])
+    print(dp[groups_size][k - 1])
 
 
 if __name__ == "__main__":
