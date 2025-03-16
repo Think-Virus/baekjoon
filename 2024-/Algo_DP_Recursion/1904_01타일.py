@@ -1,12 +1,14 @@
 def solve():
     n = int(input())
-    dp = [0] * (n + 1)
-    dp[1] = 1
-    dp[2] = 2
+    dp1 = 1
+    dp2 = 2
+    dp3 = dp1 + dp2
 
-    for i in range(3, n + 1):
-        dp[i] = dp[i - 1] + dp[i - 2]
-    print(dp[n] % 15746)
+    for i in range(4, n + 1):
+        dp1 = dp2
+        dp2 = dp3
+        dp3 = dp1 + dp2
+    print(dp3 % 15746)
 
 
 if __name__ == '__main__':
