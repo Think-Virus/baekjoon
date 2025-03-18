@@ -22,7 +22,11 @@ def solve(n, meetings):
         for j in range(end_meeting + 1, n + 1):
             dp[i][j] = max(dp[i][end_meeting] + dp[j][n], dp[i + 1][j], dp[i][j - 1])
 
-    print(dp[1][n])
+    result = 0
+    for i in range(1, n + 1):
+        result = max(result, dp[i][n])
+
+    print(result)
 
 
 if __name__ == '__main__':
