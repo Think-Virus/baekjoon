@@ -2,19 +2,23 @@ def solve():
     first = input()
     second = input()
 
-    dp = [[0] * (len(second) + 1) for _ in range(len(first) + 1)]
+    dp = [[[0, ''] for _ in range(len(second) + 1)] for _ in range(len(first) + 1)]
 
-    result_str = ""
     for i in range(1, len(first) + 1):
         for j in range(1, len(second) + 1):
             if first[i - 1] == second[j - 1]:
-                dp[i][j] = dp[i - 1][j - 1] + 1
-                if dp[i][j] > len(result_str):
-                    result_str += first[i - 1]
+                dp[i][j][0] = dp[i - 1][j - 1][0] + 1
+                dp[i][j][1] = dp[i - 1][j - 1][1] + first[i - 1]
             else:
-                dp[i][j] = max(dp[i][j - 1], dp[i - 1][j])
+                if dp[i][j - 1][0] > dp[i - 1][j][0]:
+                    dp[i][j][0] = dp[i][j - 1][0]
+                    dp[i][j][1] = dp[i][j - 1][1]
+                else:
+                    dp[i][j][0] = dp[i - 1][j][0]
+                    dp[i][j][1] = dp[i - 1][j][1]
 
-    print(dp[len(first)][len(second)])
+    result_len, result_str = dp[len(first)][len(second)]
+    print(result_len)
     print(result_str)
 
 
