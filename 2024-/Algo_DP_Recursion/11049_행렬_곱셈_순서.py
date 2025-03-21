@@ -8,17 +8,19 @@ def input_data():
 
 
 def solve(n, matrixs):
-    dp = [[0] * n for _ in range(n)]
+    INF = float('inf')
+    dp = [[INF] * n for _ in range(n)]
 
-    for i in range(n - 2, -1, -1):
-        for _j in range(1, n - i):
+    for i in range(n):
+        dp[i][i] = 0
+
+    for _j in range(1, n):
+        for i in range(n):
             j = i + _j
-            s_i, e_i = matrixs[i]
-            s_j, e_j = matrixs[j]
-            if _j == 1:
-                dp[i][j] = s_i * s_j * e_j
-            else:
-                dp[i][j] = min(dp[i][j - 1] + s_i * s_j * e_j, dp[i + 1][j] + s_i * matrixs[i + 1][0] * e_j)
+            if j >= n:
+                break
+            for k in range(1, _j + 1):
+                dp[i][j] = min(dp[i][j], dp[i][i + k - 1] + dp[i + k][j] + matrixs[i][0] * matrixs[j][1] * matrixs[i + k][0])
 
     print(dp[0][n - 1])
 
