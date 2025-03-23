@@ -1,33 +1,31 @@
 import sys
+from collections import deque
 
 
 def input_data():
     n = int(sys.stdin.readline())
     distances = list(map(int, sys.stdin.readline().split()))
-    gas_station = list(map(int, sys.stdin.readline().split()))
+    gas_station = deque(map(int, sys.stdin.readline().split()))
 
     return n, distances, gas_station
 
 
 def solve(n, distances, gas_station):
-    # cheapest = min(gas_station)
-    total_fee = 0
+    plan = []
+    min_gas = float('inf')
 
-    curr_gas = gas_station[0]
-    going_distance = 0
-    for i in range(n - 2):
-        if curr_gas <= gas_station[i + 1]:
-            going_distance += distances[i]
+    for i, gas in enumerate(gas_station):
+        if i == n - 1: break
+
+        if gas < min_gas:
+            plan.append([gas, distances[i]])
+            min_gas = gas
         else:
-            if going_distance:
-                total_fee += going_distance * curr_gas
-            else:
-                total_fee += distances[i] * curr_gas
-            curr_gas = gas_station[i + 1]
+            plan[-1][1] += distances[i]
 
-            going_distance = 0
-
-    total_fee += curr_gas * (going_distance + distances[n - 2])
+    total_fee = 0
+    for gas, distance in plan:
+        total_fee += gas * distance
 
     print(total_fee)
 
