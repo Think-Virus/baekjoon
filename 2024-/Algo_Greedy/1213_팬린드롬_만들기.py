@@ -1,33 +1,39 @@
 import heapq
 
 
+def get_index(alphabet):
+    return ord(alphabet) - 65
+
+
+def get_alphabet(idx):
+    return chr(idx + 65)
+
+
 def solve():
     name = input()
-    alphabets = []
-    for alphabet in name:
-        heapq.heappush(alphabets, alphabet)
-
-    result = []
+    amounts = [0] * 26
+    palindrome = ""
     middle_alphabet = ""
-    while alphabets:
-        start = heapq.heappop(alphabets)
-        end = heapq.heappop(alphabets)
 
-        if not end:  # final
-            middle_alphabet = end
-        else:
-            if start != end:
+    for alphabet in name:
+        amounts[get_index(alphabet)] += 1
+
+    for _i, amount in enumerate(amounts[::-1]):
+        i = 25 - _i
+        if not amount:
+            continue
+        if amount % 2 == 1:
+            if middle_alphabet:
                 print("I'm Sorry Hansoo")
                 return
-            else:
-                result.append(start)
 
-    palindrome = ''
-    for alphabet in result:
-        palindrome += alphabet
-    palindrome += middle_alphabet
-    for alphabet in result[::-1]:
-        palindrome += alphabet
+            middle_alphabet = get_alphabet(i)
+
+        curr_alphabet = get_alphabet(i)
+        palindrome = curr_alphabet * (amount // 2) + palindrome + curr_alphabet * (amount // 2)
+
+    if middle_alphabet:
+        palindrome = palindrome[:len(palindrome) // 2] + middle_alphabet + palindrome[len(palindrome) // 2:]
 
     print(palindrome)
 
