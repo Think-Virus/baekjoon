@@ -17,6 +17,9 @@ def solve():
         result[curr_i] = -1 * curr_num
         cnt += 1
 
+        if cnt == n - k:
+            break
+
         tmp_heap = []
         while number_order:
             tmp_num, tmp_i = heapq.heappop(number_order)
@@ -25,6 +28,7 @@ def solve():
             else:
                 result[tmp_i] = -1 * tmp_num
                 cnt += 1
+                curr_i = tmp_i
                 if cnt == n - k:
                     break
         number_order = tmp_heap
@@ -33,4 +37,5 @@ def solve():
 
 
 if __name__ == '__main__':
-    solve()
+    while True:
+        solve()
