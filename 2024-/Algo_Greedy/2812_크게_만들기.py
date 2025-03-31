@@ -4,60 +4,40 @@ import heapq
 def solve():
     n, k = map(int, input().split())
     total_number = input()
-    number_order = []
-    result = [''] * n
-    cnt = 0
 
-    for i, number in enumerate(total_number):
-        heapq.heappush(number_order, (-1 * int(number), i))
+    def fill_result(s_index, f_index, rest):
+        if f_index - s_index < 0:
+            print(0)
+            return None
 
-    start_index = number_order[0][1] + 1
-    end_index = n - 1
-    is_next = True
+        r_result = [''] * n
 
-    while cnt != n - k:
-        curr_num, curr_i = heapq.heappop(number_order)
+        if f_index - s_index < rest:
+            r_result[s_index:f_index + 1] = total_number[s_index:f_index + 1]
+            return r_result, s_index - 1, rest - (f_index - s_index)
 
-        if result[curr_i]:
-            continue
+        while rest != 0:
+            number_order = []
+            for i, number in enumerate(total_number[s_index:f_index + 1]):
+                heapq.heappush(number_order, (-1 * int(number), i + s_index))
+            rest -= 1
 
-        if curr_i < start_index and not is_next:
-            continue
+            curr_max_num, curr_i = heapq.heappop(number_order)
+            r_result[curr_i] = -1 * curr_max_num
+            if rest == 0:
+                return r_result, curr_i, rest
 
-        result[curr_i] = -1 * curr_num
-        cnt += 1
+            fill_result_set = fill_result(curr_i + 1, f_index, rest)
+            if fill_result_set:
+                r_result[curr_i + 1:f_index + 1] = fill_result_set[0][curr_i + 1:f_index + 1]
+                f_index = fill_result_set[1]
+                rest = fill_result_set[2]
+            else:
+                f_index -= 1
 
-        if cnt == n - k:
-            break
+        return r_result, f_index, rest
 
-        start_index = curr_i + 1
-        tmp_heapq = []
-        if n - k - cnt >= end_index - start_index + 1:
-            for i in range(start_index, end_index + 1):
-                result[i] = total_number[i]
-                cnt += 1
-
-                if cnt == n - k:
-                    break
-            end_index = curr_i - 1
-            is_next = True
-        else:
-            for i in range(start_index, end_index + 1):
-                heapq.heappush(tmp_heapq, (-1 * int(total_number[i]), i))
-
-            while tmp_heapq:
-                tmp_num, tmp_i = heapq.heappop(tmp_heapq)
-                if tmp_i < start_index:
-                    continue
-
-                result[tmp_i] = -1 * tmp_num
-                cnt += 1
-                if cnt == n - k:
-                    break
-                start_index = tmp_i + 1
-            is_next = False
-        start_index = curr_i + 1
-
+    result = fill_result(0, n - 1, n - k)[0]
     print(*result, sep='')
 
 
