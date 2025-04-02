@@ -1,5 +1,6 @@
 import sys
 import heapq
+from collections import deque
 
 
 def input_data():
@@ -8,9 +9,7 @@ def input_data():
     for crane in map(int, sys.stdin.readline().split()):
         heapq.heappush(cranes, -1 * crane)
     m = int(sys.stdin.readline())
-    boxes = []
-    for box in map(int, sys.stdin.readline().split()):
-        heapq.heappush(boxes, -1 * box)
+    boxes = deque(sorted(list(map(int, sys.stdin.readline().split())), reverse=True))
 
     return cranes, boxes
 
@@ -18,33 +17,37 @@ def input_data():
 def solve(cranes, boxes):
     spent_minutes = 0
 
-    if cranes[0] > boxes[0]:
+    lightest_box = boxes[-1]
+    usable_cranes = []
+    while cranes:
+        crane = heapq.heappop(cranes)
+        if -1 * crane >= lightest_box:
+            heapq.heappush(usable_cranes, crane)
+
+    if not usable_cranes:
         print(-1)
         return
 
     while boxes:
-        tmp_cranes = cranes[:]
+        passed_cranes = []
 
-        while tmp_cranes:
-            crane = heapq.heappop(tmp_cranes)
+        while usable_cranes:
+            crane = -1 * heapq.heappop(usable_cranes)
 
             if not boxes:
                 break
 
             if crane <= boxes[0]:
-                heapq.heappop(boxes)
+                boxes.popleft()
+                heapq.heappush(passed_cranes, -1 * crane)
             else:
-                passed_boxes = []
-                while boxes:
-                    box = heapq.heappop(boxes)
-                    if crane <= box:
-                        for passed_box in passed_boxes:
-                            heapq.heappush(boxes, passed_box)
-                        break
-                    else:
-                        passed_boxes.append(box)
-                boxes = passed_boxes
+                lightest_box = boxes[-1]
 
+                if crane >= lightest_box:
+                    boxes.pop()
+                    heapq.heappush(passed_cranes, -1 * crane)
+
+        usable_cranes = passed_cranes
         spent_minutes += 1
 
     print(spent_minutes)
