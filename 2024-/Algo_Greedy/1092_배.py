@@ -37,7 +37,7 @@ def solve(cranes, boxes):
             if not boxes:
                 break
 
-            if crane <= boxes[0]:
+            if crane >= boxes[0]:
                 boxes.popleft()
                 heapq.heappush(passed_cranes, -1 * crane)
             else:
