@@ -17,8 +17,19 @@ def input_data():
 
 def solve(cranes, boxes):
     spent_minutes = 0
+
+    usable_cranes = []
+    while cranes:
+        crane = heapq.heappop(cranes)
+        if crane >= boxes[0]:
+            heapq.heappush(usable_cranes, crane)
+
+    if not usable_cranes:
+        print(-1)
+        return
+
     while boxes:
-        tmp_cranes = cranes[:]
+        tmp_cranes = usable_cranes[:]
 
         while tmp_cranes:
             crane = heapq.heappop(tmp_cranes)
