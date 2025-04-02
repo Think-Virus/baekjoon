@@ -43,6 +43,7 @@ def solve(cranes, boxes):
                         break
                     else:
                         passed_boxes.append(box)
+                boxes = passed_boxes
 
         spent_minutes += 1
 
