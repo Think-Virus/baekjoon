@@ -24,30 +24,34 @@ def solve(cranes, boxes):
         if -1 * crane >= lightest_box:
             heapq.heappush(usable_cranes, crane)
 
-    if not usable_cranes:
+    if not usable_cranes or boxes[0] > -1 * usable_cranes[0]:
         print(-1)
         return
 
     while boxes:
-        passed_cranes = []
+        curr_usable_cranes = []
 
         while usable_cranes:
+            passed_boxes = deque()
             crane = -1 * heapq.heappop(usable_cranes)
-
             if not boxes:
                 break
 
             if crane >= boxes[0]:
                 boxes.popleft()
-                heapq.heappush(passed_cranes, -1 * crane)
+                heapq.heappush(curr_usable_cranes, -1 * crane)
             else:
-                lightest_box = boxes[-1]
+                while boxes:
+                    curr_box = boxes.popleft()
+                    if crane >= curr_box:
+                        heapq.heappush(curr_usable_cranes, -1 * crane)
+                        break
+                    else:
+                        passed_boxes.append(curr_box)
+            if passed_boxes:
+                boxes = passed_boxes + boxes
 
-                if crane >= lightest_box:
-                    boxes.pop()
-                    heapq.heappush(passed_cranes, -1 * crane)
-
-        usable_cranes = passed_cranes
+        usable_cranes = curr_usable_cranes
         spent_minutes += 1
 
     print(spent_minutes)
