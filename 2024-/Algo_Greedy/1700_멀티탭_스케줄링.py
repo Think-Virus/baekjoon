@@ -12,9 +12,9 @@ def input_data():
             machines.append(machine)
             pre_machine = machine
 
-    for machine in machines:
+    for i, machine in enumerate(machines):
         machine_count[machine][0] += 1
-        heapq.heappush(machine_count[machine][1], machine)
+        heapq.heappush(machine_count[machine][1], i)
 
     return n, k, machines, machine_count
 
@@ -25,6 +25,7 @@ def solve(n, k, machines, machine_count):
     plug = [-1] * (k + 1)
 
     for machine in machines:
+        # print(machine)
         if plugged < n:
             machine_count[machine][0] -= 1
             heapq.heappop(machine_count[machine][1])
@@ -37,30 +38,36 @@ def solve(n, k, machines, machine_count):
                 machine_count[machine][0] -= 1
                 heapq.heappop(machine_count[machine][1])
             else:
-                min_i = k + 1
-                min_count = k + 1
+                latest_machine = k + 1
+                # min_count = k + 1
                 tmp_count = 0
 
                 for m_i, c in enumerate(plug):
                     if c == -1:
                         continue
                     else:
-                        if min_count > c:
-                            min_i = m_i
-                            min_count = c
-                        elif min_count == c:
-                            if c == 0:
-                                continue
-                            if machine_count[min_i][1][0] > machine_count[m_i][1][0]:
-                                min_i = m_i
+                        if c == 0:
+                            latest_machine = m_i
+                            break
+
+                        if latest_machine == k+1:
+                            latest_machine = m_i
+
+                        if machine_count[latest_machine][1][0] < machine_count[m_i][1][0]:
+                            latest_machine = m_i
                         tmp_count += 1
                         if tmp_count == n:
                             break
-                plug[min_i] = -1
+                plug[latest_machine] = -1
                 machine_count[machine][0] -= 1
                 plug[machine] = machine_count[machine][0]
                 heapq.heappop(machine_count[machine][1])
                 unplugged += 1
+        # curr_tmp = []
+        # for i in range(1, k + 1):
+        #     if plug[i] != -1:
+        #         curr_tmp.append(i)
+        # print(curr_tmp)
 
     print(unplugged)
 
